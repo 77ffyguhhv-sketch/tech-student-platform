@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStudent AI — Student Intelligence Hub</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+    <!-- NAVIGATION BAR -->
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <span class="nav-logo-icon">🤖</span>
+            <span>TechStudent AI</span>
+        </a>
+        <ul class="nav-menu">
+            <li><a href="/" class="nav-link" data-en="Home" data-ar="الرئيسية">Home</a></li>
+            <li><a href="#services" class="nav-link" data-en="Services" data-ar="الخدمات">Services</a></li>
+            <li><a href="#about" class="nav-link" data-en="About Platform" data-ar="عن المنصة">About Platform</a></li>
+        </ul>
+        <div class="nav-controls">
+            <button id="lang-toggle" class="btn btn-secondary" style="font-size:0.85rem; padding:0.4rem 0.8rem;">العربية</button>
+            <button id="theme-toggle" class="btn-icon">🌙</button>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="hero">
+        <div class="hero-content">
+            <span class="hero-badge" data-en="Empowering Education" data-ar="تمكين التعليم">Empowering Education</span>
+            <h1 data-en="Empowering Students with Artificial Intelligence" data-ar="تمكين الطلاب باستخدام الذكاء الاصطناعي">
+                Empowering Students with Artificial Intelligence
+            </h1>
+            <p data-en="Our smart platform combines Machine Learning and Recommendation Systems to assist you in making better academic, technical, and career path decisions."
+               data-ar="تدمج منصتنا الذكية بين تعلم الآلة وأنظمة التوصية لمساعدتك في اتخاذ قرارات أكاديمية وتقنية ومسارات تعليمية أفضل.">
+                Our smart platform combines Machine Learning and Recommendation Systems to assist you in making better academic, technical, and career path decisions.
+            </p>
+            <div class="hero-actions">
+                <a href="#services" class="btn btn-primary" data-en="Explore Services" data-ar="استكشف الخدمات">Explore Services</a>
+                <a href="#about" class="btn btn-secondary" data-en="Get Started" data-ar="ابدأ الآن">Get Started</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="container">
+        
+        <!-- SERVICES SECTION -->
+        <section id="services" style="margin-bottom: 5rem;">
+            <h2 class="section-title" data-en="AI-Powered Platform Services" data-ar="خدمات المنصة المدعومة بالذكاء الاصطناعي">
+                AI-Powered Platform Services
+            </h2>
+            <div class="services-grid">
+                
+                <!-- Card 1: Major Advisor -->
+                <div class="card card-major">
+                    <div class="card-icon">🧠</div>
+                    <h3 data-en="Smart Major Advisor" data-ar="المستشار الذكي للتخصصات">Smart Major Advisor</h3>
+                    <p data-en="Uncover your ideal academic major or career path! Input your cognitive and creative skills and let the AI system suggest the perfect profession."
+                       data-ar="اكتشف تخصصك الأكاديمي أو مسارك المهني المثالي! أدخل مهاراتك الإدراكية والإبداعية ودع نظام الذكاء الاصطناعي يقترح المهنة الأنسب.">
+                        Uncover your ideal academic major or career path! Input your cognitive and creative skills and let the AI system suggest the perfect profession.
+                    </p>
+                    <a href="/major-advisor" class="btn btn-primary" style="margin-top: auto;" data-en="Analyze Skills" data-ar="حلل مهاراتك">Analyze Skills</a>
+                </div>
+
+                <!-- Card 2: Success Predictor -->
+                <div class="card card-success">
+                    <div class="card-icon">📈</div>
+                    <h3 data-en="Study Success Predictor" data-ar="متنبئ النجاح الدراسي">Study Success Predictor</h3>
+                    <p data-en="Estimate your academic GPA and study success category. Provide information about your interests, memberships, location, and languages for an AI performance analysis."
+                       data-ar="توقع معدلك الأكاديمي وفئة نجاحك الدراسي. قدم معلومات حول اهتماماتك وعضوياتك وموقعك ولغاتك للحصول على تحليل أداء بالذكاء الاصطناعي.">
+                        Estimate your academic GPA and study success category. Provide information about your interests, memberships, location, and languages for an AI performance analysis.
+                    </p>
+                    <a href="/study-success" class="btn btn-primary" style="margin-top: auto;" data-en="Predict Success" data-ar="توقع نجاحك">Predict Success</a>
+                </div>
+
+                <!-- Card 3: Device Advisor -->
+                <div class="card card-device">
+                    <div class="card-icon">💻</div>
+                    <h3 data-en="Smart Device Advisor" data-ar="المستشار الذكي للأجهزة">Smart Device Advisor</h3>
+                    <p data-en="Find the absolute best device matching your budget and rating specifications, or evaluate your own custom device specs to predict its fair market price."
+                       data-ar="ابحث عن أفضل جهاز يناسب ميزانيتك ومواصفات التقييم، أو قم بتقييم مواصفات جهازك المخصص لتوقع سعره العادل في السوق.">
+                        Find the absolute best device matching your budget and rating specifications, or evaluate your own custom device specs to predict its fair market price.
+                    </p>
+                    <a href="/device-advisor" class="btn btn-primary" style="margin-top: auto;" data-en="Find Devices" data-ar="ابحث عن أجهزة">Find Devices</a>
+                </div>
+
+                <!-- Card 4: Roadmap Generator -->
+                <div class="card card-roadmap">
+                    <div class="card-icon">🗺️</div>
+                    <h3 data-en="Learning Roadmap Generator" data-ar="مولد مسار التعلم">Learning Roadmap Generator</h3>
+                    <p data-en="Generate structured step-by-step learning roadmaps. Enter your topic of interest, and the recommender will output a sequence of modules and related courses."
+                       data-ar="أنشئ مسارات تعلم منظمة خطوة بخطوة. أدخل موضوع اهتمامك وسيقوم نظام التوصية بإخراج سلسلة من الوحدات والدورات التدريبية ذات الصلة.">
+                        Generate structured step-by-step learning roadmaps. Enter your topic of interest, and the recommender will output a sequence of modules and related courses.
+                    </p>
+                    <a href="/learning-roadmap" class="btn btn-primary" style="margin-top: auto;" data-en="Build Roadmap" data-ar="أنشئ مساراً">Build Roadmap</a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ABOUT SECTION -->
+        <section id="about">
+            <div class="about-section">
+                <div class="about-section-content">
+                    <span class="hero-badge" data-en="About TechStudent AI" data-ar="حول المنصة">About TechStudent AI</span>
+                    <h2 data-en="Intelligent Support for University Students" data-ar="دعم ذكي لطلاب الجامعات">Intelligent Support for University Students</h2>
+                    <p data-en="TechStudent AI Platform is an intelligent platform that combines machine learning and recommendation systems to assist students in academic, technical, and learning decisions. By analyzing student attributes, cognitive skills, and current market data, we offer personalized suggestions to ease the student journey and improve learning outcomes."
+                       data-ar="منصة TechStudent AI هي منصة ذكية تجمع بين تعلم الآلة وأنظمة التوصية لمساعدة الطلاب في القرارات الأكاديمية والتقنية والتعليمية. من خلال تحليل سمات الطلاب، والمهارات الإدراكية، وبيانات السوق الحالية، نقدم اقتراحات مخصصة لتسهيل رحلة الطالب وتحسين مخرجات التعلم.">
+                        TechStudent AI Platform is an intelligent platform that combines machine learning and recommendation systems to assist students in academic, technical, and learning decisions. By analyzing student attributes, cognitive skills, and current market data, we offer personalized suggestions to ease the student journey and improve learning outcomes.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div style="font-weight: 700;" data-en="TechStudent AI Platform" data-ar="منصة الطلاب التقنية للذكاء الاصطناعي">TechStudent AI Platform</div>
+        <div style="font-size: 0.8rem; opacity: 0.7;" data-en="© 2026 TechStudent AI. Powered by Advanced Machine Learning." data-ar="© 2026 TechStudent AI. مدعوم بالتعلم الآلي المتقدم.">
+            © 2026 TechStudent AI. Powered by Advanced Machine Learning.
+        </div>
+    </footer>
+
+    <!-- LOGIC SCRIPTS -->
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

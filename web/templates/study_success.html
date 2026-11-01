@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Success Predictor — TechStudent AI</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+    <!-- NAVIGATION BAR -->
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <span class="nav-logo-icon">📈</span>
+            <span>TechStudent AI</span>
+        </a>
+        <ul class="nav-menu">
+            <li><a href="/" class="nav-link" data-en="Home" data-ar="الرئيسية">Home</a></li>
+            <li><a href="/#services" class="nav-link" data-en="Services" data-ar="الخدمات">Services</a></li>
+            <li><a href="/#about" class="nav-link" data-en="About Platform" data-ar="عن المنصة">About Platform</a></li>
+        </ul>
+        <div class="nav-controls">
+            <button id="lang-toggle" class="btn btn-secondary" style="font-size:0.85rem; padding:0.4rem 0.8rem;">العربية</button>
+            <button id="theme-toggle" class="btn-icon">🌙</button>
+        </div>
+    </nav>
+
+    <!-- CONTAINER -->
+    <main class="container">
+        
+        <!-- PAGE HEADER -->
+        <header class="page-header">
+            <div class="header-icon" style="background: var(--color-primary-gradient);">📈</div>
+            <h1 data-en="Study Success Predictor" data-ar="متنبئ النجاح الدراسي">Study Success Predictor</h1>
+            <p data-en="Estimate your academic GPA and success category! Fill out the information card below with details on your interest, skills, extracurricular activities, and languages, and let our ML regression pipeline analyze your profile."
+               data-ar="توقع معدلك الأكاديمي وفئة نجاحك الدراسي! املأ بطاقة المعلومات أدناه بتفاصيل حول اهتماماتك ومهاراتك وأنشطتك الإضافية ولغاتك، ودع نموذج الانحدار الخاص بنا يحلل ملفك.">
+                Estimate your academic GPA and success category! Fill out the information card below with details on your interest, skills, extracurricular activities, and languages, and let our ML regression pipeline analyze your profile.
+            </p>
+        </header>
+
+        <!-- INPUT FORM CARD -->
+        <section class="card" style="max-width: 900px; margin: 0 auto;">
+            <form id="study-success-form">
+                
+                <h3 style="margin-bottom: 1.5rem;" data-en="Student Profile Details" data-ar="تفاصيل ملف الطالب">
+                    Student Profile Details
+                </h3>
+                
+                <div class="form-grid">
+                    
+                    <!-- 1. Major -->
+                    <div class="form-group">
+                        <label for="Major" data-en="Academic Major" data-ar="التخصص الأكاديمي">Academic Major</label>
+                        <select id="Major" required>
+                            <option value="Computer Science" selected data-en="Computer Science" data-ar="علوم الحاسوب">Computer Science</option>
+                            <option value="Mathematics" data-en="Mathematics" data-ar="الرياضيات">Mathematics</option>
+                            <option value="Physics" data-en="Physics" data-ar="الفيزياء">Physics</option>
+                            <option value="Biology" data-en="Biology" data-ar="علم الأحياء (بيولوجي)">Biology</option>
+                            <option value="Psychology" data-en="Psychology" data-ar="علم النفس">Psychology</option>
+                            <option value="History" data-en="History" data-ar="التاريخ">History</option>
+                        </select>
+                    </div>
+
+                    <!-- 2. Year Of Study -->
+                    <div class="form-group">
+                        <label for="YearOfStudy" data-en="Year of Study" data-ar="السنة الدراسية">Year of Study</label>
+                        <select id="YearOfStudy" required>
+                            <option value="Freshman" selected data-en="Freshman (Year 1)" data-ar="السنة الأولى (سنة أولى)">Freshman (Year 1)</option>
+                            <option value="Sophomore" data-en="Sophomore (Year 2)" data-ar="السنة الثانية (سنة ثانية)">Sophomore (Year 2)</option>
+                            <option value="Junior" data-en="Junior (Year 3)" data-ar="السنة الثالثة (سنة ثالثة)">Junior (Year 3)</option>
+                            <option value="Senior" data-en="Senior (Year 4)" data-ar="السنة الرابعة (تخرج)">Senior (Year 4)</option>
+                            <option value="Graduate" data-en="Graduate Studies" data-ar="دراسات عليا">Graduate Studies</option>
+                        </select>
+                    </div>
+
+                    <!-- 3. Academic Interest -->
+                    <div class="form-group">
+                        <label for="AcademicInterest" data-en="Academic Interest" data-ar="الاهتمام الأكاديمي الرئيسي">Academic Interest</label>
+                        <select id="AcademicInterest" required>
+                            <option value="Computer Science" selected data-en="Computer Science" data-ar="علوم الحاسوب">Computer Science</option>
+                            <option value="Mathematics" data-en="Mathematics" data-ar="الرياضيات">Mathematics</option>
+                            <option value="Physics" data-en="Physics" data-ar="الفيزياء">Physics</option>
+                            <option value="Biology" data-en="Biology" data-ar="علم الأحياء (بيولوجي)">Biology</option>
+                            <option value="Psychology" data-en="Psychology" data-ar="علم النفس">Psychology</option>
+                            <option value="History" data-en="History" data-ar="التاريخ">History</option>
+                        </select>
+                    </div>
+
+                    <!-- 4. Research Interest -->
+                    <div class="form-group">
+                        <label for="ResearchInterests" data-en="Primary Research Interest" data-ar="الاهتمام البحثي الرئيسي">Primary Research Interest</label>
+                        <select id="ResearchInterests" required>
+                            <option value="Machine Learning" selected data-en="Machine Learning" data-ar="التعلم الآلي (Machine Learning)">Machine Learning</option>
+                            <option value="Cybersecurity" data-en="Cybersecurity" data-ar="الأمن السيبراني">Cybersecurity</option>
+                            <option value="Nanotechnology" data-en="Nanotechnology" data-ar="تقنية النانو (Nanotechnology)">Nanotechnology</option>
+                            <option value="Space Exploration" data-en="Space Exploration" data-ar="استكشاف الفضاء">Space Exploration</option>
+                            <option value="Bioinformatics" data-en="Bioinformatics" data-ar="المعلوماتية الحيوية">Bioinformatics</option>
+                            <option value="Biomedical Engineering" data-en="Biomedical Engineering" data-ar="الهندسة الطبية الحيوية">Biomedical Engineering</option>
+                            <option value="Climate Change" data-en="Climate Change" data-ar="التغير المناخي">Climate Change</option>
+                            <option value="Environmental Sustainability" data-en="Environmental Sustainability" data-ar="الاستدامة البيئية">Environmental Sustainability</option>
+                            <option value="Urban Planning" data-en="Urban Planning" data-ar="التخطيط العمراني">Urban Planning</option>
+                            <option value="Social Sciences" data-en="Social Sciences" data-ar="العلوم الاجتماعية">Social Sciences</option>
+                        </select>
+                    </div>
+
+                    <!-- 5. Extracurricular Activities -->
+                    <div class="form-group">
+                        <label for="ExtracurricularActivities" data-en="Extracurricular Activities" data-ar="الأنشطة غير المنهجية">Extracurricular Activities</label>
+                        <select id="ExtracurricularActivities" required>
+                            <option value="Coding Club" selected data-en="Coding Club" data-ar="نادي البرمجة">Coding Club</option>
+                            <option value="Debate Club" data-en="Debate Club" data-ar="نادي المناظرة">Debate Club</option>
+                            <option value="Volunteer Group" data-en="Volunteer Group" data-ar="فريق العمل التطوعي">Volunteer Group</option>
+                            <option value="Sports Team" data-en="Sports Team" data-ar="الفريق الرياضي">Sports Team</option>
+                            <option value="Art Club" data-en="Art Club" data-ar="نادي الفنون">Art Club</option>
+                            <option value="Music Club" data-en="Music Club" data-ar="نادي الموسيقى">Music Club</option>
+                        </select>
+                    </div>
+
+                    <!-- 6. Location -->
+                    <div class="form-group">
+                        <label for="Location" data-en="University Location" data-ar="موقع الجامعة">University Location</label>
+                        <select id="Location" required>
+                            <option value="New York" selected data-en="New York" data-ar="نيويورك">New York</option>
+                            <option value="Boston" data-en="Boston" data-ar="بوسطن">Boston</option>
+                            <option value="Chicago" data-en="Chicago" data-ar="شيكاغو">Chicago</option>
+                            <option value="Houston" data-en="Houston" data-ar="هيوسطن">Houston</option>
+                            <option value="Los Angeles" data-en="Los Angeles" data-ar="لوس أنجلوس">Los Angeles</option>
+                            <option value="San Francisco" data-en="San Francisco" data-ar="سان فرانسيسكو">San Francisco</option>
+                        </select>
+                    </div>
+
+                    <!-- 7. Skills Checkboxes (Multi-select) -->
+                    <div class="form-group form-group-full">
+                        <label data-en="Core Skills" data-ar="المهارات الأساسية">Core Skills</label>
+                        <span class="label-desc" data-en="Select all that apply to you." data-ar="اختر كل ما ينطبق عليك.">Select all that apply to you.</span>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item"><input type="checkbox" name="Skills" value="Programming" checked> <span data-en="Programming" data-ar="البرمجة">Programming</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="Skills" value="Data Analysis" checked> <span data-en="Data Analysis" data-ar="تحليل البيانات">Data Analysis</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="Skills" value="Problem Solving" checked> <span data-en="Problem Solving" data-ar="حل المشكلات">Problem Solving</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="Skills" value="Leadership"> <span data-en="Leadership" data-ar="القيادة">Leadership</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="Skills" value="Public Speaking"> <span data-en="Public Speaking" data-ar="الإلقاء والتحدث العام">Public Speaking</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="Skills" value="Artistic"> <span data-en="Artistic Skills" data-ar="المهارات الفنية والإبداعية">Artistic Skills</span></label>
+                        </div>
+                    </div>
+
+                    <!-- 8. Languages Checkboxes (Multi-select) -->
+                    <div class="form-group form-group-full">
+                        <label data-en="Spoken Languages" data-ar="اللغات التي تتحدثها">Spoken Languages</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item"><input type="checkbox" name="Languages" value="English" checked> <span data-en="English" data-ar="الإنجليزية">English</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="Languages" value="Spanish"> <span data-en="Spanish" data-ar="الإسبانية">Spanish</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="Languages" value="French"> <span data-en="French" data-ar="الفرنسية">French</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="Languages" value="German"> <span data-en="German" data-ar="الألمانية">German</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="Languages" value="Chinese"> <span data-en="Chinese" data-ar="الصينية">Chinese</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="Languages" value="Japanese"> <span data-en="Japanese" data-ar="اليابانية">Japanese</span></label>
+                        </div>
+                    </div>
+
+                    <!-- 9. Club Memberships Checkboxes (Multi-select) -->
+                    <div class="form-group form-group-full">
+                        <label data-en="Club Memberships" data-ar="عضويات النوادي الجامعية">Club Memberships</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item"><input type="checkbox" name="ClubMemberships" value="Coding Club" checked> <span data-en="Coding Club" data-ar="نادي البرمجة">Coding Club</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="ClubMemberships" value="Volunteer Group" checked> <span data-en="Volunteer Group" data-ar="فريق العمل التطوعي">Volunteer Group</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="ClubMemberships" value="Sports Team"> <span data-en="Sports Team" data-ar="الفريق الرياضي">Sports Team</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="ClubMemberships" value="Debate Club"> <span data-en="Debate Club" data-ar="نادي المناظرة">Debate Club</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="ClubMemberships" value="Art Club"> <span data-en="Art Club" data-ar="نادي الفنون">Art Club</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="ClubMemberships" value="Music Club"> <span data-en="Music Club" data-ar="نادي الموسيقى">Music Club</span></label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary" style="padding: 1rem 3rem; font-size: 1.1rem;"
+                            data-en="Predict My Performance" data-ar="توقع أدائي الدراسي">
+                        Predict My Performance
+                    </button>
+                </div>
+
+            </form>
+        </section>
+
+        <!-- LOADING INDICATOR -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- RESULTS SECTION -->
+        <section id="results-wrapper" class="results-wrapper" style="max-width: 900px; margin: 3rem auto 0 auto;">
+            <div class="results-card" style="border-color: var(--color-accent-success);">
+                <div style="text-align: center;">
+                    <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;" data-en="Your Study Success Analysis" data-ar="تحليل نجاحك الدراسي">
+                        Your Study Success Analysis
+                    </h3>
+                    <p style="color: var(--text-secondary);" data-en="Based on your student details, the regression model estimates:" data-ar="بناءً على تفاصيل الطالب الخاصة بك، يقدر نموذج الانحدار ما يلي:">
+                        Based on your student details, the regression model estimates:
+                    </p>
+                </div>
+
+                <div class="result-gpa-display">
+                    <span id="gpa-value" style="color: var(--color-accent-success);">0.00</span>
+                    <span style="font-size: 1.25rem; font-weight: 500; color: var(--text-secondary);">/ 4.00 GPA</span>
+                </div>
+
+                <div class="result-badge-container">
+                    <div id="success-category" class="result-badge success-good" data-en="Good" data-ar="جيد">Good</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div style="font-weight: 700;" data-en="TechStudent AI Platform" data-ar="منصة الطلاب التقنية للذكاء الاصطناعي">TechStudent AI Platform</div>
+        <div style="font-size: 0.8rem; opacity: 0.7;" data-en="© 2026 TechStudent AI. Powered by Advanced Machine Learning." data-ar="© 2026 TechStudent AI. مدعوم بالتعلم الآلي المتقدم.">
+            © 2026 TechStudent AI. Powered by Advanced Machine Learning.
+        </div>
+    </footer>
+
+    <!-- LOGIC SCRIPTS -->
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

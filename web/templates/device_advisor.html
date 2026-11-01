@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Device Advisor — TechStudent AI</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+    <!-- NAVIGATION BAR -->
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <span class="nav-logo-icon">💻</span>
+            <span>TechStudent AI</span>
+        </a>
+        <ul class="nav-menu">
+            <li><a href="/" class="nav-link" data-en="Home" data-ar="الرئيسية">Home</a></li>
+            <li><a href="/#services" class="nav-link" data-en="Services" data-ar="الخدمات">Services</a></li>
+            <li><a href="/#about" class="nav-link" data-en="About Platform" data-ar="عن المنصة">About Platform</a></li>
+        </ul>
+        <div class="nav-controls">
+            <button id="lang-toggle" class="btn btn-secondary" style="font-size:0.85rem; padding:0.4rem 0.8rem;">العربية</button>
+            <button id="theme-toggle" class="btn-icon">🌙</button>
+        </div>
+    </nav>
+
+    <!-- CONTAINER -->
+    <main class="container">
+        
+        <!-- PAGE HEADER -->
+        <header class="page-header">
+            <div class="header-icon" style="background: var(--color-primary-gradient);">💻</div>
+            <h1 data-en="Smart Device Advisor" data-ar="المستشار الذكي للأجهزة">Smart Device Advisor</h1>
+            <p data-en="Find the ideal laptop or mobile device that fits your student needs! Use the recommendation filters to discover real devices from our database, or enter custom specifications to predict its fair market price using our AI model."
+               data-ar="اعثر على الهاتف المحمول أو الجهاز المثالي الذي يناسب احتياجاتك الدراسية! استخدم فلاتر التوصية لاكتشاف الأجهزة الحقيقية من قاعدة بياناتنا، أو أدخل مواصفات مخصصة لتوقع سعرها العادل باستخدام نموذجنا الذكي.">
+                Find the ideal laptop or mobile device that fits your student needs! Use the recommendation filters to discover real devices from our database, or enter custom specifications to predict its fair market price using our AI model.
+            </p>
+        </header>
+
+        <div style="display: flex; flex-direction: column; gap: 3rem;">
+            
+            <!-- SECTION 1: RECOMMEND DEVICES FROM DATABASE -->
+            <section class="card" style="max-width: 900px; margin: 0 auto; border-top: 4px solid var(--color-accent-device);">
+                <form id="device-rec-form">
+                    <h3 style="margin-bottom: 1.5rem;" data-en="Find My Best Device (Recommendation)" data-ar="ابحث عن الجهاز المناسب (نظام التوصية)">
+                        Find My Best Device (Recommendation)
+                    </h3>
+                    
+                    <div class="form-grid">
+                        
+                        <!-- 1. Budget Slider -->
+                        <div class="slider-container" style="grid-column: 1 / -1;">
+                            <div class="slider-header">
+                                <span data-en="Max Budget (SAR - ر.س)" data-ar="الميزانية القصوى (بالريال السعودي - ر.س)">Max Budget (SAR - ر.س)</span>
+                                <span class="slider-val">50000</span>
+                            </div>
+                            <span class="label-desc" data-en="Select the maximum price you are willing to spend." data-ar="اختر الحد الأقصى للسعر الذي ترغب في دفعه.">Select the maximum price you are willing to spend.</span>
+                            <input type="range" id="budget" min="5000" max="90000" step="1000" value="50000" class="range-slider">
+                        </div>
+
+                        <!-- 2. Minimum Rating Slider -->
+                        <div class="slider-container">
+                            <div class="slider-header">
+                                <span data-en="Minimum Rating (Stars)" data-ar="الحد الأدنى للتقييم (بالنجوم)">Minimum Rating (Stars)</span>
+                                <span class="slider-val">4.0</span>
+                            </div>
+                            <input type="range" id="min_rating" min="3.0" max="5.0" step="0.1" value="4.0" class="range-slider">
+                        </div>
+
+                        <!-- 3. Specification keywords -->
+                        <div class="form-group">
+                            <label for="keyword" data-en="Brand / Spec Keyword (Optional)" data-ar="العلامة التجارية / كلمة مواصفات مفتاحية (اختياري)">Brand / Spec Keyword (Optional)</label>
+                            <input type="text" id="keyword" data-placeholder-en="e.g. OnePlus, 128GB, Snapdragon" data-placeholder-ar="مثال: OnePlus, 128GB, Snapdragon" placeholder="e.g. OnePlus, 128GB, Snapdragon">
+                        </div>
+
+                    </div>
+
+                    <div style="text-align: center; margin-top: 1.5rem;">
+                        <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2.5rem;"
+                                data-en="Find My Best Device" data-ar="ابحث عن الجهاز المناسب">
+                            Find My Best Device
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- SECTION 2: CUSTOM DEVICE PRICE PREDICTOR -->
+            <section class="card" style="max-width: 900px; margin: 0 auto;">
+                <form id="device-predict-form">
+                    <h3 style="margin-bottom: 1.5rem;" data-en="Predict Device Value (AI Pricing Model)" data-ar="توقع قيمة الجهاز (نموذج تسعير الذكاء الاصطناعي)">
+                        Predict Device Value (AI Pricing Model)
+                    </h3>
+                    
+                    <div class="form-grid">
+                        
+                        <!-- 1. Text Description -->
+                        <div class="form-group form-group-full">
+                            <label for="predict_text" data-en="Device Brand & Full Specifications" data-ar="العلامة التجارية ومواصفات الجهاز الكاملة">Device Brand & Full Specifications</label>
+                            <span class="label-desc" data-en="Type in the name, memory, storage, OS, and camera details (e.g. APPLE iPhone 13 128GB 6GB RAM iOS 15 A15 Bionic OLED)." data-ar="اكتب الاسم والذاكرة والتخزين ونظام التشغيل وتفاصيل الكاميرا (مثال: APPLE iPhone 13 128GB 6GB RAM iOS 15 A15 Bionic OLED).">Type in the name, memory, storage, OS, and camera details (e.g. APPLE iPhone 13 128GB 6GB RAM iOS 15 A15 Bionic OLED).</span>
+                            <textarea id="predict_text" rows="3" required data-placeholder-en="e.g. REDMI Note 12 Pro 5G 128GB 6GB RAM Android 12 Snapdragon AMOLED" data-placeholder-ar="مثال: REDMI Note 12 Pro 5G 128GB 6GB RAM Android 12 Snapdragon AMOLED" placeholder="e.g. REDMI Note 12 Pro 5G 128GB 6GB RAM Android 12 Snapdragon AMOLED"></textarea>
+                        </div>
+
+                        <!-- 2. Device Rating Slider -->
+                        <div class="slider-container style-device" style="grid-column: 1 / -1;">
+                            <div class="slider-header">
+                                <span data-en="Expected Device Rating" data-ar="تقييم الجهاز المتوقع">Expected Device Rating</span>
+                                <span class="slider-val">4.2</span>
+                            </div>
+                            <input type="range" id="predict_rating" min="1.0" max="5.0" step="0.1" value="4.2" class="range-slider">
+                        </div>
+
+                    </div>
+
+                    <div style="text-align: center; margin-top: 1.5rem;">
+                        <button type="submit" class="btn btn-secondary" style="padding: 0.75rem 2.5rem; border-color: var(--color-accent-device); color: var(--color-accent-device);"
+                                data-en="Predict Price" data-ar="توقع السعر">
+                            Predict Price
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+        </div>
+
+        <!-- LOADING INDICATOR -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- RESULTS SECTION 1: RECOMMENDATIONS -->
+        <section id="results-wrapper" class="results-wrapper" style="max-width: 900px; margin: 3rem auto 0 auto;">
+            <div class="results-card" style="border-color: var(--color-accent-device);">
+                <div style="text-align: center;">
+                    <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;" data-en="Top Recommended Devices" data-ar="أفضل الأجهزة الموصى بها">
+                        Top Recommended Devices
+                    </h3>
+                    <p style="color: var(--text-secondary);" data-en="Here are the best matches fitting your budget and rating expectations:" data-ar="إليك أفضل الخيارات المتوافقة مع ميزانيتك وتوقعات التقييم الخاصة بك:">
+                        Here are the best matches fitting your budget and rating expectations:
+                    </p>
+                </div>
+
+                <div id="device-list" class="device-results-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- RESULTS SECTION 2: PRICE PREDICTION -->
+        <section id="results-wrapper-predict" class="results-wrapper" style="max-width: 900px; margin: 3rem auto 0 auto;">
+            <div class="results-card" style="border-color: var(--color-accent-device); background-color: var(--bg-card);">
+                <div style="text-align: center;">
+                    <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;" data-en="AI Estimated Device Value" data-ar="قيمة الجهاز التقديرية بالذكاء الاصطناعي">
+                        AI Estimated Device Value
+                    </h3>
+                    <p style="color: var(--text-secondary);" data-en="Based on the specifications and rating, our model predicts this device should retail for:" data-ar="بناءً على المواصفات والتقييم، يتوقع نموذجنا أن سعر التجزئة العادل لهذا الجهاز هو:">
+                        Based on the specifications and rating, our model predicts this device should retail for:
+                    </p>
+                </div>
+
+                <div class="result-gpa-display">
+                    <span id="predicted-price-val" style="color: var(--color-accent-device);">0.00 ر.س</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div style="font-weight: 700;" data-en="TechStudent AI Platform" data-ar="منصة الطلاب التقنية للذكاء الاصطناعي">TechStudent AI Platform</div>
+        <div style="font-size: 0.8rem; opacity: 0.7;" data-en="© 2026 TechStudent AI. Powered by Advanced Machine Learning." data-ar="© 2026 TechStudent AI. مدعوم بالتعلم الآلي المتقدم.">
+            © 2026 TechStudent AI. Powered by Advanced Machine Learning.
+        </div>
+    </footer>
+
+    <!-- LOGIC SCRIPTS -->
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

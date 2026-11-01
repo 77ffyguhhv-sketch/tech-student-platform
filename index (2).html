@@ -1,0 +1,2471 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>منصة الطالب التقني | Tech Student Platform</title>
+  
+  <!-- Google Fonts: Cairo, Plus Jakarta Sans, Outfit, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            ar: ['Cairo', 'sans-serif'],
+            en: ['Plus Jakarta Sans', 'Outfit', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          },
+          colors: {
+            navy: {
+              950: '#040711',
+              900: '#070D1E',
+              850: '#0A132C',
+              800: '#0E1A3C',
+              700: '#152654',
+              600: '#1D3572'
+            },
+            accent: {
+              cyan: '#00E5FF',
+              sky: '#38BDF8',
+              blue: '#2563EB',
+              indigo: '#6366F1',
+              emerald: '#10B981',
+              amber: '#F59E0B',
+              rose: '#F43F5E'
+            }
+          },
+          animation: {
+            'float-slow': 'float 7s ease-in-out infinite',
+            'pulse-slow': 'pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'spin-slow': 'spin 20s linear infinite',
+            'glow-pulse': 'glow 4s ease-in-out infinite alternate'
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-12px)' },
+            },
+            glow: {
+              '0%': { opacity: '0.3', filter: 'blur(30px)' },
+              '100%': { opacity: '0.7', filter: 'blur(50px)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --bg-dark: #050914;
+      --card-bg: rgba(10, 19, 44, 0.65);
+      --card-border: rgba(56, 189, 248, 0.12);
+      --cyan-glow: rgba(0, 229, 255, 0.25);
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: #F8FAFC;
+      font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif;
+      overflow: hidden;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body.lang-en {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* Glassmorphism Luxury Cards */
+    .glass-panel {
+      background: var(--card-bg);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid var(--card-border);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-panel:hover {
+      border-color: rgba(56, 189, 248, 0.3);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 229, 255, 0.12);
+    }
+
+    .glass-pill {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Text Gradients */
+    .text-gradient-cyan {
+      background: linear-gradient(135deg, #FFFFFF 20%, #38BDF8 60%, #00E5FF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .text-gradient-blue {
+      background: linear-gradient(135deg, #FFFFFF 0%, #60A5FA 50%, #2563EB 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .text-gradient-gold {
+      background: linear-gradient(135deg, #FDE68A 0%, #F59E0B 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Slide Transition Viewport */
+    .slide-container {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.97) translateY(16px);
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1.8rem 3rem;
+      z-index: 10;
+    }
+    .slide-container.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1) translateY(0);
+      z-index: 20;
+    }
+    .slide-container.prev {
+      transform: scale(1.02) translateY(-16px);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.25);
+      border-radius: 9999px;
+    }
+
+    /* Hologram Grid Background */
+    .bg-grid {
+      background-size: 36px 36px;
+      background-image: 
+        linear-gradient(to right, rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
+    }
+
+    /* Print Setup */
+    @media print {
+      body {
+        overflow: visible;
+        background: #050914 !important;
+        color: #fff !important;
+      }
+      .slide-container {
+        position: relative !important;
+        opacity: 1 !important;
+        transform: none !important;
+        page-break-after: always;
+        height: 100vh;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="h-screen w-screen overflow-hidden relative flex flex-col justify-between select-none">
+
+  <!-- ================= DYNAMIC BACKGROUND ================= -->
+  <div class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
+    <canvas id="neural-canvas" class="absolute inset-0 w-full h-full opacity-50"></canvas>
+    <div class="absolute inset-0 bg-grid"></div>
+
+    <!-- Ambient Glowing Orbs -->
+    <div class="absolute w-[600px] h-[600px] bg-cyan-600/10 -top-48 -right-48 rounded-full blur-[100px] pointer-events-none animate-glow-pulse"></div>
+    <div class="absolute w-[700px] h-[700px] bg-blue-600/10 -bottom-56 -left-56 rounded-full blur-[120px] pointer-events-none animate-glow-pulse" style="animation-delay: 2.5s;"></div>
+    <div class="absolute w-[450px] h-[450px] bg-indigo-600/10 top-1/3 left-1/3 rounded-full blur-[90px] pointer-events-none"></div>
+  </div>
+
+  <!-- ================= TOP NAVIGATION & HEADER ================= -->
+  <header class="relative z-30 flex items-center justify-between px-8 py-3.5 border-b border-sky-500/10 bg-navy-950/60 backdrop-blur-xl">
+    <!-- Brand / Project Badge -->
+    <div class="flex items-center gap-3.5">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-400 via-blue-500 to-indigo-600 p-[1px] shadow-lg shadow-cyan-500/20">
+        <div class="w-full h-full bg-navy-950 rounded-[11px] flex items-center justify-center">
+          <i data-lucide="sparkles" class="w-5 h-5 text-cyan-400"></i>
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-sm md:text-base font-black text-white tracking-wide flex items-center gap-1.5">
+            <span class="lang-ar">منصة الطالب التقني</span>
+            <span class="lang-en hidden">Tech Student Platform</span>
+          </h1>
+          <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">AI-EDUTECH</span>
+        </div>
+        <p class="text-[11px] text-slate-400">
+          <span class="lang-ar">مشروع التخرج التطبيقي لمسار الذكاء الاصطناعي الجامعي</span>
+          <span class="lang-en hidden">AI Graduation Project | Academic Decision Engine</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Center Slide Counter Badge -->
+    <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/10 text-xs font-mono text-slate-300">
+      <span class="text-cyan-400 font-bold" id="slide-num-badge">01</span>
+      <span class="text-slate-500">/</span>
+      <span>18</span>
+      <span class="text-slate-500 mr-2 ml-2">|</span>
+      <span id="slide-category" class="text-slate-300 font-medium">Cover & Introduction</span>
+    </div>
+
+    <!-- Controls: Language Toggle, Timer, Presentation Tools -->
+    <div class="flex items-center gap-2">
+      <!-- Language Switcher Button -->
+      <button onclick="toggleLanguage()" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/30 hover:border-cyan-400 text-xs font-bold text-cyan-300 flex items-center gap-1.5 transition-all shadow-sm">
+        <i data-lucide="languages" class="w-3.5 h-3.5"></i>
+        <span id="lang-btn-text">English</span>
+      </button>
+
+      <!-- Timer Button -->
+      <button onclick="toggleTimer()" title="Presentation Timer" class="p-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-cyan-300 border border-white/10 transition-all flex items-center gap-1.5 text-xs font-mono">
+        <i data-lucide="clock" class="w-3.5 h-3.5 text-cyan-400"></i>
+        <span id="timer-text">00:00</span>
+      </button>
+
+      <!-- AI Defense / Q&A Modal Button -->
+      <button onclick="toggleQAModal()" title="Professor Defense Cheat Sheet (Q)" class="p-2 rounded-xl bg-white/[0.03] hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-white/10 hover:border-amber-500/30 transition-all flex items-center gap-1.5 text-xs">
+        <i data-lucide="help-circle" class="w-3.5 h-3.5 text-amber-400"></i>
+        <span class="hidden lg:inline text-xs font-semibold">
+          <span class="lang-ar">بنك المناقشة</span>
+          <span class="lang-en hidden">Defense Q&A</span>
+        </span>
+      </button>
+
+      <!-- Fullscreen Toggle -->
+      <button onclick="toggleFullScreen()" title="Fullscreen Mode (F)" class="p-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/10 transition-all">
+        <i data-lucide="maximize" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= MAIN SLIDES VIEWPORT ================= -->
+  <main class="relative flex-1 w-full h-full overflow-hidden z-20">
+
+    <!-- ================= SLIDE 1: COVER ================= -->
+    <div class="slide-container active" data-slide="1" data-cat="Cover">
+      <div class="flex items-center justify-between text-xs text-slate-400">
+        <span class="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex items-center gap-1.5 font-mono">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+          AI Practical Course Final Project Evaluation
+        </span>
+        <span class="font-mono">Slide 01 / 18</span>
+      </div>
+
+      <div class="grid grid-cols-12 gap-8 my-auto items-center">
+        <!-- Title & Subtitle -->
+        <div class="col-span-12 lg:col-span-7 space-y-6">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-navy-850 border border-cyan-500/30 text-xs text-cyan-300 font-semibold shadow-inner">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+            </span>
+            <span class="lang-ar">منظومة ذكاء اصطناعي لدعم القرار الأكاديمي والمهني</span>
+            <span class="lang-en hidden">AI-Powered Academic & Career Decision Support System</span>
+          </div>
+
+          <div class="space-y-2">
+            <h2 class="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight">
+              <span class="lang-ar">منصة الطالب التقني</span>
+              <span class="lang-en hidden">Tech Student Platform</span>
+              <br />
+              <span class="text-gradient-cyan">Tech Student Platform</span>
+            </h2>
+            <p class="text-base md:text-lg text-slate-300 leading-relaxed max-w-xl font-medium">
+              <span class="lang-ar">منصة ذكية مدعومة بخوارزميات تعلم الآلة لمساعدة الطلاب الجامعيين في اتخاذ قرارات أكاديمية وتقنية ومهنية استباقية ومدروسة.</span>
+              <span class="lang-en hidden">An AI-Powered Platform That Helps University Students Make Better Academic, Technical, and Career Decisions.</span>
+            </p>
+          </div>
+
+          <!-- Feature Metric Badges -->
+          <div class="grid grid-cols-3 gap-3 pt-2 max-w-lg">
+            <div class="glass-panel p-3 rounded-2xl text-center border-sky-500/20">
+              <div class="text-[11px] text-slate-400">
+                <span class="lang-ar">خدمات ذكية رئيسية</span>
+                <span class="lang-en hidden">AI Core Modules</span>
+              </div>
+              <div class="text-2xl font-black text-cyan-400 font-mono mt-0.5">5 Services</div>
+            </div>
+            <div class="glass-panel p-3 rounded-2xl text-center border-sky-500/20">
+              <div class="text-[11px] text-slate-400">
+                <span class="lang-ar">دقة التنبؤ والتوصية</span>
+                <span class="lang-en hidden">Prediction Accuracy</span>
+              </div>
+              <div class="text-2xl font-black text-sky-400 font-mono mt-0.5">92.4%</div>
+            </div>
+            <div class="glass-panel p-3 rounded-2xl text-center border-sky-500/20">
+              <div class="text-[11px] text-slate-400">
+                <span class="lang-ar">التقنيات المستخدمة</span>
+                <span class="lang-en hidden">Tech Stack</span>
+              </div>
+              <div class="text-2xl font-black text-indigo-400 font-mono mt-0.5">Python / ML</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3D Futuristic AI Hologram Visual -->
+        <div class="col-span-12 lg:col-span-5 relative">
+          <div class="glass-panel p-6 rounded-3xl border-sky-500/30 relative overflow-hidden shadow-2xl">
+            <div class="absolute -right-20 -top-20 w-48 h-48 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -left-20 -bottom-20 w-48 h-48 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Header of Mockup -->
+            <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
+              <div class="flex items-center gap-2.5">
+                <div class="w-3 h-3 rounded-full bg-rose-500/80"></div>
+                <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
+                <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+                <span class="text-xs font-mono text-slate-400 ml-2">tech-student-ai.platform</span>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300">v2.4 Live Model</span>
+            </div>
+
+            <!-- Holographic Interactive Nodes Grid -->
+            <div class="space-y-3 text-xs">
+              <div class="p-3 rounded-xl bg-navy-900/80 border border-cyan-500/20 flex items-center justify-between hover:border-cyan-400 transition-all">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center font-mono font-bold">01</div>
+                  <div>
+                    <div class="font-bold text-white">
+                      <span class="lang-ar">توصية التخصص الجامعي</span>
+                      <span class="lang-en hidden">Major Recommendation</span>
+                    </div>
+                    <div class="text-[10px] text-slate-400">RandomForest Classifier &bull; 94% Match</div>
+                  </div>
+                </div>
+                <i data-lucide="check-circle" class="w-4 h-4 text-cyan-400"></i>
+              </div>
+
+              <div class="p-3 rounded-xl bg-navy-900/80 border border-blue-500/20 flex items-center justify-between hover:border-blue-400 transition-all">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center font-mono font-bold">02</div>
+                  <div>
+                    <div class="font-bold text-white">
+                      <span class="lang-ar">توصية جهاز الحاسوب المناسب</span>
+                      <span class="lang-en hidden">Laptop AI Recommendation</span>
+                    </div>
+                    <div class="text-[10px] text-slate-400">Budget & Specs Optimization</div>
+                  </div>
+                </div>
+                <i data-lucide="check-circle" class="w-4 h-4 text-blue-400"></i>
+              </div>
+
+              <div class="p-3 rounded-xl bg-navy-900/80 border border-indigo-500/20 flex items-center justify-between hover:border-indigo-400 transition-all">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-mono font-bold">03</div>
+                  <div>
+                    <div class="font-bold text-white">
+                      <span class="lang-ar">التنبؤ بالأداء الأكاديمي والجدول</span>
+                      <span class="lang-en hidden">GPA Prediction & Study Plan</span>
+                    </div>
+                    <div class="text-[10px] text-slate-400">Linear Regression & Automated Planner</div>
+                  </div>
+                </div>
+                <i data-lucide="check-circle" class="w-4 h-4 text-indigo-400"></i>
+              </div>
+            </div>
+
+            <!-- Footer Badge -->
+            <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400">
+              <span class="flex items-center gap-1.5"><i data-lucide="cpu" class="w-3.5 h-3.5 text-cyan-400"></i> Scikit-Learn Powered</span>
+              <span class="font-mono text-cyan-400">AI Confidence: 96.8%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+        <span class="flex items-center gap-2">
+          <i data-lucide="arrow-left-right" class="w-3.5 h-3.5 text-cyan-400"></i>
+          <span class="lang-ar">استخدم الأسهم &larr; &rarr; أو المسافة للتنقل السلس</span>
+          <span class="lang-en hidden">Use Left/Right arrows or Spacebar to navigate smoothly</span>
+        </span>
+        <span class="font-mono text-cyan-400">AI-Powered Academic Decision System</span>
+      </div>
+    </div>
+
+    <!-- ================= SLIDE 2: THE PROBLEM ================= -->
+    <div class="slide-container" data-slide="2" data-cat="Problem Analysis">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center text-sm font-bold font-mono">02</span>
+          <div>
+            <h3 class="text-2xl font-bold text-white">
+              <span class="lang-ar">المشكلة والتحديات الطلابية</span>
+              <span class="lang-en hidden">The Problem & Student Challenges</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-mono">Critical Bottlenecks in University Student Decision-Making</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono text-rose-400 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20">The Core Friction</span>
+      </div>
+
+      <div class="grid grid-cols-12 gap-5 my-auto items-stretch">
+        <!-- 4 Key Problem Cards -->
+        <div class="col-span-12 lg:col-span-3">
+          <div class="glass-panel p-5 rounded-2xl border-rose-500/20 h-full flex flex-col justify-between space-y-3">
+            <div class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center">
+              <i data-lucide="help-circle" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="text-2xl font-black text-rose-400 font-mono">68%</div>
+              <h4 class="text-sm font-bold text-white mt-1">
+                <span class="lang-ar">حيرة اختيار التخصص</span>
+                <span class="lang-en hidden">Major Indecision</span>
+              </h4>
+              <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+                <span class="lang-ar">صعوبة المواءمة بين شغف الطالب، مهاراته الحقيقية، واحتياجات سوق العمل التقني المعاصر.</span>
+                <span class="lang-en hidden">Students struggle to match their genuine skills and interests with fast-evolving tech career demands.</span>
+              </p>
+            </div>
+            <div class="text-[10px] font-mono text-rose-300/80 bg-rose-950/40 p-2 rounded-lg border border-rose-500/20">Major Mismatch Risk</div>
+          </div>
+        </div>
+
+        <div class="col-span-12 lg:col-span-3">
+          <div class="glass-panel p-5 rounded-2xl border-amber-500/20 h-full flex flex-col justify-between space-y-3">
+            <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
+              <i data-lucide="laptop" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="text-2xl font-black text-amber-400 font-mono">74%</div>
+              <h4 class="text-sm font-bold text-white mt-1">
+                <span class="lang-ar">عشوائية شراء اللابتوب</span>
+                <span class="lang-en hidden">Laptop Selection Chaos</span>
+              </h4>
+              <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+                <span class="lang-ar">شراء أجهزة غير ملائمة للمتطلبات البرمجية أو إهدار الميزانية دون فهم المواصفات المطلوبة لتخصصهم.</span>
+                <span class="lang-en hidden">Buying inadequate hardware for coding/AI or overspending budget without matching actual software loads.</span>
+              </p>
+            </div>
+            <div class="text-[10px] font-mono text-amber-300/80 bg-amber-950/40 p-2 rounded-lg border border-amber-500/20">Budget & Spec Loss</div>
+          </div>
+        </div>
+
+        <div class="col-span-12 lg:col-span-3">
+          <div class="glass-panel p-5 rounded-2xl border-blue-500/20 h-full flex flex-col justify-between space-y-3">
+            <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
+              <i data-lucide="calendar-x" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="text-2xl font-black text-blue-400 font-mono">59%</div>
+              <h4 class="text-sm font-bold text-white mt-1">
+                <span class="lang-ar">غياب التخطيط الأكاديمي</span>
+                <span class="lang-en hidden">Poor Academic Planning</span>
+              </h4>
+              <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+                <span class="lang-ar">غياب خطط المذاكرة المنظمة والتنبؤ المبكر بالتعثر قبل فوات الأوان وانخفاض المعدل التراكمي.</span>
+                <span class="lang-en hidden">Lack of structured weekly study timetables and zero early warnings before GPA drops occur.</span>
+              </p>
+            </div>
+            <div class="text-[10px] font-mono text-blue-300/80 bg-blue-950/40 p-2 rounded-lg border border-blue-500/20">GPA Drop Factor</div>
+          </div>
+        </div>
+
+        <div class="col-span-12 lg:col-span-3">
+          <div class="glass-panel p-5 rounded-2xl border-purple-500/20 h-full flex flex-col justify-between space-y-3">
+            <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
+              <i data-lucide="compass" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="text-2xl font-black text-purple-400 font-mono">81%</div>
+              <h4 class="text-sm font-bold text-white mt-1">
+                <span class="lang-ar">غموض المستقبل المهني</span>
+                <span class="lang-en hidden">Career Uncertainty</span>
+              </h4>
+              <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+                <span class="lang-ar">انعدام الرؤية حول المهارات الإضافية والشهادات الاحترافية المطلوبة لكل مسار تقني ومهني.</span>
+                <span class="lang-en hidden">Absence of clear roadmaps showing required certifications and industry skillsets for graduates.</span>
+              </p>
+            </div>
+            <div class="text-[10px] font-mono text-purple-300/80 bg-purple-950/40 p-2 rounded-lg border border-purple-500/20">Market Disconnect</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+        <span class="text-rose-400 font-semibold">
+          <span class="lang-ar">النتيجة: تشتت أكاديمي، انخفاض في المعدلات، وخسارة للمال والوقت.</span>
+          <span class="lang-en hidden">Result: Academic confusion, GPA decline, wasted financial budget, and lost time.</span>
+        </span>
+        <span class="font-mono text-slate-400">Slide 02 / 18</span>
+      </div>
+    </div>
+
+    <!-- ================= SLIDE 3: PROJECT IDEA ================= -->
+    <div class="slide-container" data-slide="3" data-cat="Project Vision">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-bold font-mono">03</span>
+          <div>
+            <h3 class="text-2xl font-bold text-white">
+              <span class="lang-ar">فكرة المشروع والحل الذكي</span>
+              <span class="lang-en hidden">Project Idea & Intelligent Solution</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-mono">Empowering Students Through Data-Driven AI Decision Intelligence</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono text-cyan-400 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20">The AI Pivot</span>
+      </div>
+
+      <div class="grid grid-cols-12 gap-6 my-auto items-stretch">
+        <!-- Solution Description -->
+        <div class="col-span-12 lg:col-span-5 space-y-4">
+          <div class="glass-panel p-6 rounded-3xl border-cyan-500/20 h-full flex flex-col justify-between space-y-4">
+            <div>
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-cyan-500/10 text-cyan-300 text-xs font-bold mb-3">
+                <i data-lucide="cpu" class="w-4 h-4"></i>
+                <span class="lang-ar">المستشار الأكاديمي الرقمي</span>
+                <span class="lang-en hidden">AI Academic Advisor</span>
+              </div>
+              <h4 class="text-lg font-bold text-white leading-snug">
+                <span class="lang-ar">تحويل الحيرة الطلابية إلى قرارات مبنية على البيانات وخوارزميات تعلم الآلة</span>
+                <span class="lang-en hidden">Transforming student uncertainty into data-backed ML decisions</span>
+              </h4>
+              <p class="text-xs text-slate-300 leading-relaxed mt-2.5">
+                <span class="lang-ar">«منصة الطالب التقني» هي بيئة ويب ذكية متكاملة تحلل مدخلات الطالب (المعدل، الميول، الميزانية، ساعات الفراغ) لتقدم توصيات مخصصة بنسبة 100% مع تقرير أكاديمي احترافي قابل للتنزيل.</span>
+                <span class="lang-en hidden">"Tech Student Platform" is an integrated web AI platform analyzing student profiles (GPA, inclinations, budget, study habits) to deliver 100% personalized recommendations and instant downloadable PDF reports.</span>
+              </p>
+            </div>
+
+            <!-- Value Props -->
+            <div class="grid grid-cols-2 gap-2.5 pt-2">
+              <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/5 text-center">
+                <i data-lucide="zap" class="w-5 h-5 text-amber-400 mx-auto mb-1"></i>
+                <div class="text-xs font-bold text-white">
+                  <span class="lang-ar">استجابة فورية</span>
+                  <span class="lang-en hidden">Instant Inference</span>
+                </div>
+                <div class="text-[10px] text-slate-400">&lt; 0.4s AI Latency</div>
+              </div>
+              <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/5 text-center">
+                <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400 mx-auto mb-1"></i>
+                <div class="text-xs font-bold text-white">
+                  <span class="lang-ar">دقة مثبتة</span>
+                  <span class="lang-en hidden">Validated Accuracy</span>
+                </div>
+                <div class="text-[10px] text-slate-400">92%+ Confidence</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive AI Workflow Illustration -->
+        <div class="col-span-12 lg:col-span-7">
+          <div class="glass-panel p-6 rounded-3xl border-sky-500/20 h-full flex flex-col justify-between space-y-4">
+            <div class="flex items-center justify-between">
+              <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                <i data-lucide="workflow" class="w-4 h-4 text-cyan-400"></i>
+                <span class="lang-ar">مخطط تدفق تجربة المستخدم والذكاء الاصطناعي</span>
+                <span class="lang-en hidden">End-to-End User & AI Interaction Workflow</span>
+              </h4>
+              <span class="text-[10px] font-mono text-cyan-300">4-Stage Pipeline</span>
+            </div>
+
+            <!-- 4 Stage Steps -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+              <div class="p-3.5 rounded-2xl bg-navy-900 border border-sky-500/20 space-y-2 relative group hover:border-cyan-400 transition-all">
+                <div class="w-8 h-8 rounded-xl bg-cyan-500/10 text-cyan-400 mx-auto flex items-center justify-center font-mono font-bold text-xs">1</div>
+                <div class="text-xs font-bold text-white">
+                  <span class="lang-ar">إدخال البيانات</span>
+                  <span class="lang-en hidden">Input Profile</span>
+                </div>
+                <p class="text-[10px] text-slate-400">
+                  <span class="lang-ar">المعدل، الميول، والميزانية</span>
+                  <span class="lang-en hidden">GPA, Skills & Budget</span>
+                </p>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-navy-900 border border-blue-500/20 space-y-2 relative group hover:border-blue-400 transition-all">
+                <div class="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-400 mx-auto flex items-center justify-center font-mono font-bold text-xs">2</div>
+                <div class="text-xs font-bold text-white">
+                  <span class="lang-ar">معالجة AI</span>
+                  <span class="lang-en hidden">ML Inference</span>
+                </div>
+                <p class="text-[10px] text-slate-400">
+                  <span class="lang-ar">تطبيق نماذج Scikit-Learn</span>
+                  <span class="lang-en hidden">Scikit-Learn Models</span>
+                </p>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-navy-900 border border-indigo-500/20 space-y-2 relative group hover:border-indigo-400 transition-all">
+                <div class="w-8 h-8 rounded-xl bg-indigo-500/10 text-indigo-400 mx-auto flex items-center justify-center font-mono font-bold text-xs">3</div>
+                <div class="text-xs font-bold text-white">
+                  <span class="lang-ar">توليد التوصيات</span>
+                  <span class="lang-en hidden">Recommendations</span>
+                </div>
+                <p class="text-[10px] text-slate-400">
+                  <span class="lang-ar">تخصيص + لابتوب + خطة</span>
+                  <span class="lang-en hidden">Major, Laptop & Plan</span>
+                </p>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-navy-900 border border-emerald-500/20 space-y-2 relative group hover:border-emerald-400 transition-all">
+                <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 mx-auto flex items-center justify-center font-mono font-bold text-xs">4</div>
+                <div class="text-xs font-bold text-white">
+                  <span class="lang-ar">التقرير الذكي</span>
+                  <span class="lang-en hidden">PDF Report</span>
+                </div>
+                <p class="text-[10px] text-slate-400">
+                  <span class="lang-ar">وثيقة شاملة مع درجة AI</span>
+                  <span class="lang-en hidden">Comprehensive PDF</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-cyan-950/30 border border-cyan-500/20 text-xs text-cyan-300 flex items-center justify-between">
+              <span>
+                <span class="lang-ar">النتيجة: طالب واثق ومحدد المسار بخطوات عملية قابلة للقياس والتنفيذ.</span>
+                <span class="lang-en hidden">Outcome: An empowered, goal-oriented student equipped with an actionable roadmap.</span>
+              </span>
+              <i data-lucide="check" class="w-4 h-4"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+        <span>AI-Driven Education Intelligence Framework</span>
+        <span class="font-mono text-cyan-400">Slide 03 / 18</span>
+      </div>
+    </div>
+
+    <!-- ================= SLIDE 4: OBJECTIVES ================= -->
+    <div class="slide-container" data-slide="4" data-cat="Project Objectives">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm font-bold font-mono">04</span>
+          <div>
+            <h3 class="text-2xl font-bold text-white">
+              <span class="lang-ar">أهداف المشروع الاستراتيجية</span>
+              <span class="lang-en hidden">Strategic Project Objectives</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-mono">Measurable Academic, Technological & Practical Goals</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">Target Outcomes</span>
+      </div>
+
+      <div class="grid grid-cols-12 gap-5 my-auto items-stretch">
+        <!-- 4 Objective Pillars -->
+        <div class="col-span-12 md:col-span-6 lg:col-span-3">
+          <div class="glass-panel p-5 rounded-3xl border-cyan-500/20 h-full flex flex-col justify-between space-y-3 hover:border-cyan-400 transition-all">
+            <div class="flex items-center justify-between">
+              <div class="w-10 h-10 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
+                <i data-lucide="target" class="w-5 h-5"></i>
+              </div>
+              <span class="text-xs font-mono text-cyan-300 font-bold">Goal 01</span>
+            </div>
+            <div>
+              <h4 class="text-base font-bold text-white">
+                <span class="lang-ar">دقة التوجيه الأكاديمي</span>
+                <span class="lang-en hidden">Academic Guidance Accuracy</span>
+              </h4>
+              <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+                <span class="lang-ar">تحقيق دقة تزيد عن 90% في توجيه الطلاب نحو التخصص التقني الأنسب لمهاراتهم وطموحهم.</span>
+                <span class="lang-en hidden">Achieving >90% precision in steering university students toward optimal computing majors.</span>
+              </p>
+            </div>
+            <div class="text-[11px] font-mono text-cyan-400 pt-2 border-t border-white/5">Target: 90%+ Match Rate</div>
+          </div>
+        </div>
+
+        <div class="col-span-12 md:col-span-6 lg:col-span-3">
+          <div class="glass-panel p-5 rounded-3xl border-blue-500/20 h-full flex flex-col justify-between space-y-3 hover:border-blue-400 transition-all">
+            <div class="flex items-center justify-between">
+              <div class="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                <i data-lucide="sliders" class="w-5 h-5"></i>
+              </div>
+              <span class="text-xs font-mono text-blue-300 font-bold">Goal 02</span>
+            </div>
+            <div>
+              <h4 class="text-base font-bold text-white">
+                <span class="lang-ar">ترشيد المشتريات التقنية</span>
+                <span class="lang-en hidden">Hardware Cost Efficiency</span>
+              </h4>
+              <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+                <span class="lang-ar">مساعدة الطالب في شراء أفضل لابتوب يلبي متطلبات تخصصه دون دفع مبالغ إضافية مهدرة.</span>
+                <span class="lang-en hidden">Guiding students to pick the highest ROI laptop matching workload without overspending.</span>
+              </p>
+            </div>
+            <div class="text-[11px] font-mono text-blue-400 pt-2 border-t border-white/5">Target: 100% Spec Fit</div>
+          </div>
+        </div>
+
+        <div class="col-span-12 md:col-span-6 lg:col-span-3">
+          <div class="glass-panel p-5 rounded-3xl border-indigo-500/20 h-full flex flex-col justify-between space-y-3 hover:border-indigo-400 transition-all">
+            <div class="flex items-center justify-between">
+              <div class="w-10 h-10 rounded-2xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+                <i data-lucide="trending-up" class="w-5 h-5"></i>
+              </div>
+              <span class="text-xs font-mono text-indigo-300 font-bold">Goal 03</span>
+            </div>
+            <div>
+              <h4 class="text-base font-bold text-white">
+                <span class="lang-ar">الإنذار الأكاديمي المبكر</span>
+                <span class="lang-en hidden">Early Performance Alert</span>
+              </h4>
+              <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+                <span class="lang-ar">التنبؤ بالمعدل التراكمي المستقبلي وتوليد جداول دراسية أسبوعية تحمي الطالب من التعثر.</span>
+                <span class="lang-en hidden">Forecasting future GPA trajectories and delivering custom schedules to prevent dropout.</span>
+              </p>
+            </div>
+            <div class="text-[11px] font-mono text-indigo-400 pt-2 border-t border-white/5">Target: 0% Academic Surprise</div>
+          </div>
+        </div>
+
+        <div class="col-span-12 md:col-span-6 lg:col-span-3">
+          <div class="glass-panel p-5 rounded-3xl border-emerald-500/20 h-full flex flex-col justify-between space-y-3 hover:border-emerald-400 transition-all">
+            <div class="flex items-center justify-between">
+              <div class="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                <i data-lucide="file-check" class="w-5 h-5"></i>
+              </div>
+              <span class="text-xs font-mono text-emerald-300 font-bold">Goal 04</span>
+            </div>
+            <div>
+              <h4 class="text-base font-bold text-white">
+                <span class="lang-ar">توثيق تقرير أكاديمي رسمي</span>
+                <span class="lang-en hidden">Executive PDF Reporting</span>
+              </h4>
+              <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+                <span class="lang-ar">إنتاج تقرير PDF تفصيلي احترافي يلخص كافة المؤشرات وتوصيات الذكاء الاصطناعي للمراجعة.</span>
+                <span class="lang-en hidden">Generating instant downloadable PDF reports summarizing metrics and ML insights.</span>
+              </p>
+            </div>
+            <div class="text-[11px] font-mono text-emerald-400 pt-2 border-t border-white/5">Target: 1-Click Generation</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+        <span>Strategic Alignment with Saudi Vision 2030 & Global AI EdTech</span>
+        <span class="font-mono text-cyan-400">Slide 04 / 18</span>
+      </div>
+    </div>
+
+    <!-- ================= SLIDE 5: SYSTEM ARCHITECTURE ================= -->
+    <div class="slide-container" data-slide="5" data-cat="System Architecture">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-sm font-bold font-mono">05</span>
+          <div>
+            <h3 class="text-2xl font-bold text-white">
+              <span class="lang-ar">معمارية النظام والمنصة (System Architecture)</span>
+              <span class="lang-en hidden">Platform Architecture & Flow</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-mono">Multi-tier Full Stack Architecture from Client UI to ML Core</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono text-blue-400 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20">System Stack</span>
+      </div>
+
+      <div class="my-auto">
+        <!-- 5 Layer Architecture Diagram -->
+        <div class="grid grid-cols-5 gap-3.5 items-center">
+          <!-- Tier 1: Student -->
+          <div class="glass-panel p-4 rounded-2xl border-cyan-500/30 text-center space-y-2 relative group hover:border-cyan-400">
+            <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-300 mx-auto flex items-center justify-center">
+              <i data-lucide="user" class="w-5 h-5"></i>
+            </div>
+            <div class="text-xs font-bold text-white">
+              <span class="lang-ar">1. الطالب الجامعي</span>
+              <span class="lang-en hidden">1. Student</span>
+            </div>
+            <p class="text-[10px] text-slate-400">
+              <span class="lang-ar">المستخدم النهائي وإدخال البيانات</span>
+              <span class="lang-en hidden">End-User Inputs & Profile</span>
+            </p>
+            <div class="text-[9px] font-mono text-cyan-300 bg-cyan-950/40 py-1 rounded">Web Client</div>
+          </div>
+
+          <!-- Tier 2: Website / Frontend -->
+          <div class="glass-panel p-4 rounded-2xl border-sky-500/30 text-center space-y-2 relative group hover:border-sky-400">
+            <div class="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-300 mx-auto flex items-center justify-center">
+              <i data-lucide="layout" class="w-5 h-5"></i>
+            </div>
+            <div class="text-xs font-bold text-white">
+              <span class="lang-ar">2. واجهة الويب</span>
+              <span class="lang-en hidden">2. Website UI</span>
+            </div>
+            <p class="text-[10px] text-slate-400">
+              <span class="lang-ar">واجهة عصرية تفاعلية وسلسة</span>
+              <span class="lang-en hidden">Modern Responsive Web UI</span>
+            </p>
+            <div class="text-[9px] font-mono text-sky-300 bg-sky-950/40 py-1 rounded">HTML5 / Tailwind / JS</div>
+          </div>
+
+          <!-- Tier 3: AI Engine / Core -->
+          <div class="glass-panel p-4 rounded-2xl border-indigo-500/40 text-center space-y-2 relative group hover:border-indigo-400 bg-indigo-950/20 shadow-lg shadow-indigo-500/10">
+            <div class="w-10 h-10 rounded-xl bg-indigo-500/30 text-indigo-300 mx-auto flex items-center justify-center">
+              <i data-lucide="cpu" class="w-5 h-5"></i>
+            </div>
+            <div class="text-xs font-bold text-white">
+              <span class="lang-ar">3. محرك الذكاء الاصطناعي</span>
+              <span class="lang-en hidden">3. AI Engine</span>
+            </div>
+            <p class="text-[10px] text-slate-400">
+              <span class="lang-ar">خوارزميات التنبؤ والتصنيف</span>
+              <span class="lang-en hidden">ML Models & Feature Pipeline</span>
+            </p>
+            <div class="text-[9px] font-mono text-indigo-300 bg-indigo-950/60 py-1 rounded">Python / Scikit-Learn</div>
+          </div>
+
+          <!-- Tier 4: Recommendation Engine -->
+          <div class="glass-panel p-4 rounded-2xl border-blue-500/30 text-center space-y-2 relative group hover:border-blue-400">
+            <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-300 mx-auto flex items-center justify-center">
+              <i data-lucide="sparkles" class="w-5 h-5"></i>
+            </div>
+            <div class="text-xs font-bold text-white">
+              <span class="lang-ar">4. محرك التوصيات</span>
+              <span class="lang-en hidden">4. Recommendation</span>
+            </div>
+            <p class="text-[10px] text-slate-400">
+              <span class="lang-ar">توليد قرارات ودرجة AI Score</span>
+              <span class="lang-en hidden">Decision Matching & AI Score</span>
+            </p>
+            <div class="text-[9px] font-mono text-blue-300 bg-blue-950/40 py-1 rounded">Scoring Algorithm</div>
+          </div>
+
+          <!-- Tier 5: Professional Report -->
+          <div class="glass-panel p-4 rounded-2xl border-emerald-500/30 text-center space-y-2 relative group hover:border-emerald-400">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-300 mx-auto flex items-center justify-center">
+              <i data-lucide="file-text" class="w-5 h-5"></i>
+            </div>
+            <div class="text-xs font-bold text-white">
+              <span class="lang-ar">5. التقرير النهائي</span>
+              <span class="lang-en hidden">5. PDF Report</span>
+            </div>
+            <p class="text-[10px] text-slate-400">
+              <span class="lang-ar">تقرير شامل للطباعة والتنزيل</span>
+              <span class="lang-en hidden">Exportable Executive Report</span>
+            </p>
+            <div class="text-[9px] font-mono text-emerald-300 bg-emerald-950/40 py-1 rounded">Automated PDF Generator</div>
+          </div>
+        </div>
+
+        <!-- Technical Description Bar -->
+        <div class="mt-6 p-4 rounded-2xl bg-white/[0.02] border border-white/10 grid grid-cols-3 gap-4 text-xs">
+          <div class="flex items-center gap-2">
+            <i data-lucide="shield" class="w-4 h-4 text-cyan-400"></i>
+            <span>
+              <strong class="text-white">Data Privacy:</strong>
+              <span class="text-slate-400"> معالجة آمنة للمدخلات دون تسريب بيانات الطالب</span>
+            </span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
+            <span>
+              <strong class="text-white">Ultra Fast:</strong>
+              <span class="text-slate-400"> زمن استجابة التنبؤ والتوصية أقل من 400ms</span>
+            </span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i data-lucide="git-merge" class="w-4 h-4 text-emerald-400"></i>
+            <span>
+              <strong class="text-white">Modular API:</strong>
+              <span class="text-slate-400"> إمكانية ربط النظام مع بوابة الجامعة LMS مستقبلاً</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+        <span>Clean Decoupled Architecture with High Scalability</span>
+        <span class="font-mono text-cyan-400">Slide 05 / 18</span>
+      </div>
+    </div>
+
+    <!-- ================= SLIDE 6: SERVICE ONE (MAJOR RECOMMENDATION) ================= -->
+    <div class="slide-container" data-slide="6" data-cat="Service 1: Specialization">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-bold font-mono">06</span>
+          <div>
+            <h3 class="text-2xl font-bold text-white">
+              <span class="lang-ar">الخدمة الأولى: التوصية الذكية بالتخصص الجامعي</span>
+              <span class="lang-en hidden">Service One: AI Specialization Recommendation</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-mono">Random Forest & Decision Tree Multi-Class Classification</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono text-cyan-400 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20">Module 01</span>
+      </div>
+
+      <div class="grid grid-cols-12 gap-6 my-auto items-stretch">
+        <!-- Input & AI Processing Details -->
+        <div class="col-span-12 lg:col-span-6 space-y-3">
+          <div class="glass-panel p-5 rounded-3xl border-cyan-500/20 space-y-3">
+            <h4 class="text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="sliders-horizontal" class="w-4 h-4 text-cyan-400"></i>
+              <span class="lang-ar">مدخلات النموذج الرياضي (Features Input)</span>
+              <span class="lang-en hidden">Model Input Features</span>
+            </h4>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
+                <span class="text-slate-400 text-[11px] block">المعدل في المواد العلمية</span>
+                <span class="font-bold text-cyan-300 font-mono">Math & Logic Score</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
+                <span class="text-slate-400 text-[11px] block">شغف البرمجة والتحليل</span>
+                <span class="font-bold text-cyan-300 font-mono">Coding Inclination</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
+                <span class="text-slate-400 text-[11px] block">الميل للأمن والشبكات</span>
+                <span class="font-bold text-cyan-300 font-mono">Cybersecurity Affinity</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
+                <span class="text-slate-400 text-[11px] block">مهارات الذكاء والبيانات</span>
+                <span class="font-bold text-cyan-300 font-mono">Data & AI Affinity</span>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-2xl bg-cyan-950/40 border border-cyan-500/30 text-xs space-y-1">
+              <div class="text-cyan-300 font-bold flex items-center gap-1.5">
+                <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
+                <span>آلية المعالجة (AI Processing):</span>
+              </div>
+              <p class="text-slate-300 text-[11px] leading-relaxed">
+                يتم تمرير المصفوفة عبر نموذج <strong>RandomForestClassifier</strong> مدرب على آلاف السجلات لإنتاج درجات احتمالية لكل تخصص حاسوبي.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Output Majors Preview Cards -->
+        <div class="col-span-12 lg:col-span-6">
+          <div class="glass-panel p-5 rounded-3xl border-sky-500/20 h-full flex flex-col justify-between space-y-3">
+            <h4 class="text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="award" class="w-4 h-4 text-sky-400"></i>
+              <span class="lang-ar">التخصصات المستهدفة ومطابقة التوافق</span>
+              <span class="lang-en hidden">Supported Computing Majors & Match Scores</span>
+            </h4>
+
+            <div class="space-y-2 text-xs">
+              <!-- AI & DS Major -->
+              <div class="p-2.5 rounded-xl bg-navy-900 border border-cyan-500/30 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-6 h-6 rounded-lg bg-cyan-500/20 text-cyan-300 font-bold flex items-center justify-center text-[10px]">AI</div>
+                  <div>
+                    <div class="font-bold text-white">الذكاء الاصطناعي وعلوم البيانات (AI & DS)</div>
+                    <div class="text-[10px] text-slate-400">Machine Learning & Big Data</div>
+                  </div>
+                </div>
+                <span class="text-cyan-400 font-mono font-bold text-sm">94.8% Match</span>
+              </div>
+
+              <!-- Software Engineering Major -->
+              <div class="p-2.5 rounded-xl bg-navy-900 border border-blue-500/30 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-6 h-6 rounded-lg bg-blue-500/20 text-blue-300 font-bold flex items-center justify-center text-[10px]">SE</div>
+                  <div>
+                    <div class="font-bold text-white">هندسة البرمجيات (Software Engineering)</div>
+                    <div class="text-[10px] text-slate-400">System Architecture & Full-Stack</div>
+                  </div>
+                </div>
+                <span class="text-blue-400 font-mono font-bold text-sm">88.5% Match</span>
+              </div>
+
+              <!-- Cybersecurity Major -->
+              <div class="p-2.5 rounded-xl bg-navy-900 border border-indigo-500/30 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-6 h-6 rounded-lg bg-indigo-500/20 text-indigo-300 font-bold flex items-center justify-center text-[10px]">CY</div>
+                  <div>
+                    <div class="font-bold text-white">الأمن السيبراني والشبكات (Cybersecurity)</div>
+                    <div class="text-[10px] text-slate-400">Ethical Hacking & Network Defense</div>
+                  </div>
+                </div>
+                <span class="text-indigo-400 font-mono font-bold text-sm">82.1% Match</span>
+              </div>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-between text-[11px] text-slate-400">
+              <span>توليد مسار مهني مقترح وخطة شهادات معتمدة مع كل تخصص</span>
+              <span class="font-mono text-cyan-400">Multi-Class Probability</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+        <span>Empowering Students to Find Their True Academic Calling</span>
+        <span class="font-mono text-cyan-400">Slide 06 / 18</span>
+      </div>
+    </div>
+
+    <!-- ================= SLIDE 7: SERVICE TWO (LAPTOP RECOMMENDATION) ================= -->
+    <div class="slide-container" data-slide="7" data-cat="Service 2: Laptop AI">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-sm font-bold font-mono">07</span>
+          <div>
+            <h3 class="text-2xl font-bold text-white">
+              <span class="lang-ar">الخدمة الثانية: التوصية الذكية بأجهزة اللابتوب</span>
+              <span class="lang-en hidden">Service Two: AI Laptop Recommendation</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-mono">Constraint Satisfaction & Spec Optimization Engine</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono text-blue-400 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20">Module 02</span>
+      </div>
+
+      <div class="my-auto space-y-4">
+        <!-- Comparison Cards of Laptop Categories -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Card 1: Budget / CS Foundation -->
+          <div class="glass-panel p-4.5 rounded-2xl border-cyan-500/20 space-y-3 relative group hover:border-cyan-400 transition-all">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300">Basic Programming</span>
+              <span class="text-xs font-bold text-cyan-400 font-mono">$600 - $850</span>
+            </div>
+            <h4 class="text-sm font-bold text-white">
+              <span class="lang-ar">الفئة الاقتصادية المعتمدة</span>
+              <span class="lang-en hidden">Budget Programming Tier</span>
+            </h4>
+            <div class="space-y-1.5 text-xs text-slate-300">
+              <div class="flex justify-between py-1 border-b border-white/5">
+                <span class="text-slate-400">المعالج CPU:</span>
+                <span class="font-mono text-white">Intel Core i5 / Ryzen 5</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-white/5">
+                <span class="text-slate-400">الرام RAM:</span>
+                <span class="font-mono text-white">16 GB DDR4/DDR5</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-white/5">
+                <span class="text-slate-400">كرت الشاشة GPU:</span>
+                <span class="font-mono text-white">Integrated Graphics</span>
+              </div>
+            </div>
+            <div class="p-2 rounded-xl bg-cyan-950/30 text-[10px] text-cyan-300 text-center font-bold">
+              مثالي لمسار: علوم الحاسب وهندسة البرمجيات
+            </div>
+          </div>
+
+          <!-- Card 2: AI & Data Science Beast -->
+          <div class="glass-panel p-4.5 rounded-2xl border-indigo-500/40 space-y-3 relative group hover:border-indigo-400 transition-all bg-indigo-950/20 shadow-lg shadow-indigo-500/10">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300">AI / Deep Learning</span>
+              <span class="text-xs font-bold text-indigo-300 font-mono">$1,200 - $1,800</span>
+            </div>
+            <h4 class="text-sm font-bold text-white">
+              <span class="lang-ar">فئة الذكاء الاصطناعي والتعلم العميق</span>
+              <span class="lang-en hidden">AI & Machine Learning Pro</span>
+            </h4>
+            <div class="space-y-1.5 text-xs text-slate-300">
+              <div class="flex justify-between py-1 border-b border-white/5">
+                <span class="text-slate-400">المعالج CPU:</span>
+                <span class="font-mono text-white">Intel Core i7/i9 / Ryzen 7</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-white/5">
+                <span class="text-slate-400">الرام RAM:</span>
+                <span class="font-mono text-white">32 GB High-Speed</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-white/5">
+                <span class="text-slate-400">كرت الشاشة GPU:</span>
+                <span class="font-mono text-emerald-300">RTX 4060 / 4070 (CUDA)</span>
+              </div>
+            </div>
+            <div class="p-2 rounded-xl bg-indigo-950/50 text-[10px] text-indigo-300 text-center font-bold">
+              مثالي لمسار: الذكاء الاصطناعي ومعالجة البيانات
+            </div>
+          </div>
+
+          <!-- Card 3: Cybersecurity & Virtualization -->
+          <div class="glass-panel p-4.5 rounded-2xl border-sky-500/20 space-y-3 relative group hover:border-sky-400 transition-all">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-500/20 text-sky-300">Cyber / VMs</span>
+              <span class="text-xs font-bold text-sky-400 font-mono">$950 - $1,400</span>
+            </div>
+            <h4 class="text-sm font-bold text-white">
+              <span class="lang-ar">فئة الأمن السيبراني والمحاكاة</span>
+              <span class="lang-en hidden">Cybersecurity & Virtual Labs</span>
+            </h4>
+            <div class="space-y-1.5 text-xs text-slate-300">
+              <div class="flex justify-between py-1 border-b border-white/5">
+                <span class="text-slate-400">المعالج CPU:</span>
+                <span class="font-mono text-white">Multi-core (8+ Cores)</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-white/5">
+                <span class="text-slate-400">الرام RAM:</span>
+                <span class="font-mono text-white">32 GB (For Virtual Labs)</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-white/5">
+                <span class="text-slate-400">التخزين SSD:</span>
+                <span class="font-mono text-white">1 TB NVMe Gen4</span>
+              </div>
+            </div>
+            <div class="p-2 rounded-xl bg-sky-950/30 text-[10px] text-sky-300 text-center font-bold">
+              مثالي لمسار: الأنظمة الموزعة واختبار الاختراق
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-white/[0.02] border border-white/10 flex items-center justify-between text-xs text-slate-400">
+          <span class="flex items-center gap-2">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-cyan-400"></i>
+            <span>الخوارزمية تقارن ميزانية الطالب مع 50+ طراز لابتوب في السوق وتقدم أفضل 3 خيارات بالترتيب.</span>
+          </span>
+          <span class="font-mono text-cyan-400">Zero Spec Waste</span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+        <span>Accurate Hardware-to-Curriculum Alignment Engine</span>
+        <span class="font-mono text-cyan-400">Slide 07 / 18</span>
+      </div>
+    </div>
+
+    <!-- ================= SLIDE 8: SERVICE THREE (GPA PREDICTION & AI SCORE) ================= -->
+    <div class="slide-container" data-slide="8" data-cat="Service 3: Performance">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-sm font-bold font-mono">08</span>
+          <div>
+            <h3 class="text-2xl font-bold text-white">
+              <span class="lang-ar">الخدمة الثالثة: التنبؤ بالأداء الأكاديمي والمعدل</span>
+              <span class="lang-en hidden">Service Three: Academic Performance Prediction</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-mono">Regression Modeling, GPA Forecasting & Academic Risk Detection</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono text-indigo-400 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20">Module 03</span>
+      </div>
+
+      <div class="grid grid-cols-12 gap-6 my-auto items-stretch">
+        <!-- Left: AI Score Gauge & Metrics -->
+        <div class="col-span-12 lg:col-span-5 space-y-3">
+          <div class="glass-panel p-5 rounded-3xl border-indigo-500/20 space-y-4">
+            <div class="flex items-center justify-between">
+              <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                <i data-lucide="gauge" class="w-4 h-4 text-indigo-400"></i>
+                <span class="lang-ar">مؤشر الجاهزية الأكاديمية (AI Score)</span>
+                <span class="lang-en hidden">Academic AI Readiness Score</span>
+              </h4>
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">Optimal Zone</span>
+            </div>
+
+            <!-- Big Metric Score Display -->
+            <div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-950/50 to-navy-900 border border-indigo-500/30 text-center space-y-1">
+              <div class="text-xs text-slate-400">معدل التوافق والتفوق المتوقع</div>
+              <div class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-400 to-indigo-300 font-mono">
+                87.5 / 100
+              </div>
+              <div class="text-[11px] text-emerald-400 font-semibold">احتمالية تفوق عالية (Predicted GPA: 4.45 / 5.00)</div>
+            </div>
+
+            <!-- Risk Indicators -->
+            <div class="space-y-2 text-xs">
+              <div class="flex justify-between items-center p-2 rounded-xl bg-white/[0.03] border border-white/5">
+                <span class="text-slate-300">مستوى مخاطر التعثر (Drop Risk):</span>
+                <span class="font-mono text-emerald-400 font-bold">منخفض (Low &lt; 6%)</span>
+              </div>
+              <div class="flex justify-between items-center p-2 rounded-xl bg-white/[0.03] border border-white/5">
+                <span class="text-slate-300">ساعات الدراسة الأسبوعية الموصى بها:</span>
+                <span class="font-mono text-cyan-300 font-bold">14.5 ساعة / أسبوع</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: GPA Trajectory Simulation Chart -->
+        <div class="col-span-12 lg:col-span-7">
+          <div class="glass-panel p-5 rounded-3xl border-sky-500/20 h-full flex flex-col justify-between space-y-3">
+            <div class="flex items-center justify-between">
+              <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                <i data-lucide="trending-up" class="w-4 h-4 text-sky-400"></i>
+                <span class="lang-ar">مسار المعدل الفعلي والتنبؤ المستقبلي (GPA Trend)</span>
+                <span class="lang-en hidden">Historical vs. AI-Predicted GPA Trajectory</span>
+              </h4>
+              <span class="text-[10px] font-mono text-slate-400">Semesters 1 &rarr; 8</span>
+            </div>
+
+            <!-- Trajectory Bars Visual Representation -->
+            <div class="space-y-2.5 py-2">
+              <div class="space-y-1">
+                <div class="flex justify-between text-xs">
+                  <span class="text-slate-300 font-medium">الفصل 1-2 (المعدل التأسيسي الفعلي)</span>
+                  <span class="font-mono text-slate-300 font-bold">3.90 / 5.00</span>
+                </div>
+                <div class="w-full h-2.5 rounded-full bg-slate-800 p-0.5">
+                  <div class="h-full rounded-full bg-slate-500" style="width: 78%;"></div>
+                </div>
+              </div>
+
+              <div class="space-y-1">
+                <div class="flex justify-between text-xs">
+                  <span class="text-slate-300 font-medium">الفصل 3-4 (المعدل الحالي بعد التوجيه)</span>
+                  <span class="font-mono text-cyan-300 font-bold">4.20 / 5.00</span>
+                </div>
+                <div class="w-full h-2.5 rounded-full bg-slate-800 p-0.5">
+                  <div class="h-full rounded-full bg-cyan-400" style="width: 84%;"></div>
+                </div>
+              </div>
+
+              <div class="space-y-1">
+                <div class="flex justify-between text-xs">
+                  <span class="text-emerald-300 font-bold">الفصل 5-8 (تنبؤ نموذج الذكاء الاصطناعي مع الخطة)</span>
+                  <span class="font-mono text-emerald-400 font-bold">4.65 / 5.00</span>
+                </div>
+                <div class="w-full h-3 rounded-full bg-slate-800 p-0.5 border border-emerald-500/40">
+                  <div class="h-full rounded-full bg-gradient-to-r from-cyan-400 to-emerald-400 shadow-lg shadow-emerald-500/30" style="width: 93%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5 text-xs text-slate-300">
+              <strong class="text-cyan-400">القيمة المضافة:</strong> تنبيه استباقي يمنح الطالب فرصة لتعديل استراتيجية المذاكرة قبل خوض الاختبارات النهائية.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+        <span>Proactive Academic Risk Mitigation & GPA Forecasting</span>
+        <span class="font-mono text-cyan-400">Slide 08 / 18</span>
+      </div>
+    </div>
+
+    <!-- ================= SLIDE 9: SERVICE FOUR (SMART STUDY PLAN) ================= -->
+    <div class="slide-container" data-slide="9" data-cat="Service 4: Study Plan">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm font-bold font-mono">09</span>
+          <div>
+            <h3 class="text-2xl font-bold text-white">
+              <span class="lang-ar">الخدمة الرابعة: مولد الخطة الدراسية الأسبوعية الذكية</span>
+              <span class="lang-en hidden">Service Four: Smart Study Plan Generator</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-mono">Dynamic Timetable Synthesis Based on Credit Hours & Subject Difficulty</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">Module 04</span>
+      </div>
+
+      <div class="my-auto space-y-4">
+        <!-- Interactive Weekly Timetable Grid -->
+        <div class="grid grid-cols-5 gap-3 text-xs">
+          <!-- Day 1: Sun -->
+          <div class="glass-panel p-3.5 rounded-2xl border-cyan-500/20 space-y-2 text-center">
+            <div class="font-bold text-cyan-300 font-mono border-b border-white/5 pb-1.5">الأحد / SUN</div>
+            <div class="p-2 rounded-xl bg-navy-900 border border-cyan-500/30 text-left space-y-0.5">
+              <div class="text-[10px] text-cyan-400 font-mono font-bold">16:00 - 18:00</div>
+              <div class="font-bold text-white text-[11px]">خوارزميات وهياكل بيانات</div>
+              <div class="text-[9px] text-slate-400">Data Structures (2h)</div>
+            </div>
+            <div class="p-2 rounded-xl bg-white/[0.02] text-left">
+              <div class="text-[9px] text-slate-400">مراجعة سريعة (1h)</div>
+            </div>
+          </div>
+
+          <!-- Day 2: Mon -->
+          <div class="glass-panel p-3.5 rounded-2xl border-blue-500/20 space-y-2 text-center">
+            <div class="font-bold text-blue-300 font-mono border-b border-white/5 pb-1.5">الإثنين / MON</div>
+            <div class="p-2 rounded-xl bg-navy-900 border border-blue-500/30 text-left space-y-0.5">
+              <div class="text-[10px] text-blue-400 font-mono font-bold">17:00 - 19:30</div>
+              <div class="font-bold text-white text-[11px]">تعلم الآلة والبيانات</div>
+              <div class="text-[9px] text-slate-400">Machine Learning (2.5h)</div>
+            </div>
+            <div class="p-2 rounded-xl bg-white/[0.02] text-left">
+              <div class="text-[9px] text-slate-400">حل واجبات الكود (1h)</div>
+            </div>
+          </div>
+
+          <!-- Day 3: Tue -->
+          <div class="glass-panel p-3.5 rounded-2xl border-indigo-500/20 space-y-2 text-center">
+            <div class="font-bold text-indigo-300 font-mono border-b border-white/5 pb-1.5">الثلاثاء / TUE</div>
+            <div class="p-2 rounded-xl bg-navy-900 border border-indigo-500/30 text-left space-y-0.5">
+              <div class="text-[10px] text-indigo-400 font-mono font-bold">16:00 - 18:00</div>
+              <div class="font-bold text-white text-[11px]">قواعد البيانات والـ SQL</div>
+              <div class="text-[9px] text-slate-400">Database Systems (2h)</div>
+            </div>
+            <div class="p-2 rounded-xl bg-white/[0.02] text-left">
+              <div class="text-[9px] text-slate-400">تطبيق عملي (1h)</div>
+            </div>
+          </div>
+
+          <!-- Day 4: Wed -->
+          <div class="glass-panel p-3.5 rounded-2xl border-sky-500/20 space-y-2 text-center">
+            <div class="font-bold text-sky-300 font-mono border-b border-white/5 pb-1.5">الأربعاء / WED</div>
+            <div class="p-2 rounded-xl bg-navy-900 border border-sky-500/30 text-left space-y-0.5">
+              <div class="text-[10px] text-sky-400 font-mono font-bold">18:00 - 20:00</div>
+              <div class="font-bold text-white text-[11px]">شبكات الحاسوب والأمن</div>
+              <div class="text-[9px] text-slate-400">Computer Networks (2h)</div>
+            </div>
+            <div class="p-2 rounded-xl bg-white/[0.02] text-left">
+              <div class="text-[9px] text-slate-400">مختبر شبكات افتراضي (1h)</div>
+            </div>
+          </div>
+
+          <!-- Day 5: Thu / Weekend Prep -->
+          <div class="glass-panel p-3.5 rounded-2xl border-emerald-500/20 space-y-2 text-center">
+            <div class="font-bold text-emerald-300 font-mono border-b border-white/5 pb-1.5">الخميس / THU</div>
+            <div class="p-2 rounded-xl bg-navy-900 border border-emerald-500/30 text-left space-y-0.5">
+              <div class="text-[10px] text-emerald-400 font-mono font-bold">16:00 - 17:30</div>
+              <div class="font-bold text-white text-[11px]">مراجعة شاملة ومشاريع</div>
+              <div class="text-[9px] text-slate-400">Capstone Project (1.5h)</div>
+            </div>
+            <div class="p-2 rounded-xl bg-emerald-950/40 text-emerald-300 text-center font-bold text-[10px]">
+              استراحة نهاية الأسبوع
+            </div>
+          </div>
+        </div>
+
+        <!-- Plan Generator Engine Highlights -->
+        <div class="p-4 rounded-2xl bg-white/[0.03] border border-white/10 grid grid-cols-3 gap-4 text-xs">
+          <div class="flex items-center gap-2">
+            <i data-lucide="brain" class="w-4 h-4 text-cyan-400"></i>
+            <span>توزيع الجهد بناءً على وزن الساعات وصعوبة المقرر</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i data-lucide="bell" class="w-4 h-4 text-amber-400"></i>
+            <span>مراعاة فترات الراحة لمنع الإرهاق الذهني والاحتراق</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i data-lucide="calendar" class="w-4 h-4 text-emerald-400"></i>
+            <span>إمكانية التصدير المباشر إلى Google Calendar و Apple iCal</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+        <span>Personalized Calendar Synthesis Tailored to Real Student Life</span>
+        <span class="font-mono text-cyan-400">Slide 09 / 18</span>
+      </div>
+    </div>
+
+    <!-- ================= SLIDE 10: SERVICE FIVE (PROFESSIONAL REPORT GENERATOR) ================= -->
+    <div class="slide-container" data-slide="10" data-cat="Service 5: PDF Report">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-bold font-mono">10</span>
+          <div>
+            <h3 class="text-2xl font-bold text-white">
+              <span class="lang-ar">الخدمة الخامسة: توليد التقرير الأكاديمي والمهني الشامل</span>
+              <span class="lang-en hidden">Service Five: Professional Report Generator</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-mono">Automated PDF Report Synthesis with Visual Analytics & Actionable Roadmap</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono text-cyan-400 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20">Module 05</span>
+      </div>
+
+      <div class="grid grid-cols-12 gap-6 my-auto items-center">
+        <!-- Left: Report Features & Content Breakdown -->
+        <div class="col-span-12 lg:col-span-6 space-y-3.5">
+          <div class="glass-panel p-5 rounded-3xl border-cyan-500/20 space-y-3">
+            <h4 class="text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="file-check" class="w-4 h-4 text-cyan-400"></i>
+              <span class="lang-ar">مكونات التقرير الصادر للطالب</span>
+              <span class="lang-en hidden">Comprehensive PDF Report Sections</span>
+            </h4>
+
+            <ul class="space-y-2 text-xs text-slate-300">
+              <li class="p-2.5 rounded-xl bg-white/[0.03] border border-white/5 flex items-center justify-between">
+                <span class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>الملخص التنفيذي لدرجة التوافق (AI Score Card)</span>
+                </span>
+                <span class="text-[10px] font-mono text-slate-400">Section 1</span>
+              </li>
+              <li class="p-2.5 rounded-xl bg-white/[0.03] border border-white/5 flex items-center justify-between">
+                <span class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>التخصص الموصى به مع المهارات والشهادات المطلوبة</span>
+                </span>
+                <span class="text-[10px] font-mono text-slate-400">Section 2</span>
+              </li>
+              <li class="p-2.5 rounded-xl bg-white/[0.03] border border-white/5 flex items-center justify-between">
+                <span class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>مواصفات اللابتوب الأنسب لميزانيته وخيارات الشراء</span>
+                </span>
+                <span class="text-[10px] font-mono text-slate-400">Section 3</span>
+              </li>
+              <li class="p-2.5 rounded-xl bg-white/[0.03] border border-white/5 flex items-center justify-between">
+                <span class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>الجدول الدراسي الأسبوعي وتوقعات المعدل التراكمي</span>
+                </span>
+                <span class="text-[10px] font-mono text-slate-400">Section 4</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Right: Ultra High-End PDF Report Mockup Preview -->
+        <div class="col-span-12 lg:col-span-6">
+          <div class="glass-panel p-6 rounded-3xl border-sky-500/30 bg-gradient-to-b from-navy-900 to-navy-950 relative shadow-2xl overflow-hidden">
+            <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+              <div class="flex items-center gap-2">
+                <i data-lucide="file-text" class="w-4 h-4 text-cyan-400"></i>
+                <span class="text-xs font-bold text-white">TECH_STUDENT_AI_REPORT.PDF</span>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">Verified AI Output</span>
+            </div>
+
+            <!-- Mini Document Blueprint -->
+            <div class="p-4 rounded-2xl bg-white/[0.02] border border-white/10 space-y-3">
+              <div class="flex justify-between items-center">
+                <div>
+                  <div class="text-xs font-bold text-cyan-300">تقرير الاستشارة الأكاديمية والتقنية</div>
+                  <div class="text-[10px] text-slate-400">Prepared for: Student ID #44102983</div>
+                </div>
+                <div class="text-lg font-black text-white font-mono bg-cyan-500/10 px-2.5 py-1 rounded-xl border border-cyan-500/30">
+                  AI: 94%
+                </div>
+              </div>
+
+              <div class="h-1 w-full bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-500 rounded-full"></div>
+
+              <div class="grid grid-cols-2 gap-2 text-[10px]">
+                <div class="p-2 rounded-lg bg-navy-950/60 border border-white/5">
+                  <div class="text-slate-400">التخصص المقترح:</div>
+                  <div class="font-bold text-white">الذكاء الاصطناعي (AI & Data)</div>
+                </div>
+                <div class="p-2 rounded-lg bg-navy-950/60 border border-white/5">
+                  <div class="text-slate-400">الجهاز الموصى به:</div>
+                  <div class="font-bold text-white">RTX 4060 / 32GB RAM</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 flex items-center justify-between text-[11px] text-slate-400">
+              <span class="flex items-center gap-1.5"><i data-lucide="download" class="w-3.5 h-3.5 text-cyan-400"></i> Ready for Immediate Download</span>
+              <span class="font-mono text-cyan-400">Vector PDF High-Res</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+        <span>Instant Tangible Value Delivered to Students & Academic Counselors</span>
+        <span class="font-mono text-cyan-400">Slide 10 / 18</span>
+      </div>
+    </div>
+
+    <!-- ================= SLIDE 11: ARTIFICIAL INTELLIGENCE TECH STACK ================= -->
+    <div class="slide-container" data-slide="11" data-cat="AI Technologies">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-sm font-bold font-mono">11</span>
+          <div>
+            <h3 class="text-2xl font-bold text-white">
+              <span class="lang-ar">منظومة الذكاء الاصطناعي والتقنيات البرمجية</span>
+              <span class="lang-en hidden">Artificial Intelligence & Tech Stack</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-mono">Machine Learning Libraries, Python Ecosystem & Data Processing Pipeline</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono text-indigo-400 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20">Tech Stack</span>
+      </div>
+
+      <div class="my-auto space-y-4">
+        <!-- 5 Core Tech Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3.5">
+          <!-- Python / ML -->
+          <div class="glass-panel p-4.5 rounded-2xl border-cyan-500/20 text-center space-y-2 hover:border-cyan-400 transition-all">
+            <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-400 mx-auto flex items-center justify-center font-bold text-base">
+              <i data-lucide="code-2" class="w-6 h-6"></i>
+            </div>
+            <div class="text-xs font-bold text-white">Python 3.11</div>
+            <p class="text-[10px] text-slate-400">لغة بناء النماذج ومعالجة الخوارزميات</p>
+            <div class="text-[9px] font-mono text-cyan-300 bg-cyan-950/40 py-0.5 rounded">Core Language</div>
+          </div>
+
+          <!-- Scikit-learn -->
+          <div class="glass-panel p-4.5 rounded-2xl border-blue-500/20 text-center space-y-2 hover:border-blue-400 transition-all">
+            <div class="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-400 mx-auto flex items-center justify-center font-bold text-base">
+              <i data-lucide="cpu" class="w-6 h-6"></i>
+            </div>
+            <div class="text-xs font-bold text-white">Scikit-Learn</div>
+            <p class="text-[10px] text-slate-400">نماذج التصنيف والانحدار والتقييم</p>
+            <div class="text-[9px] font-mono text-blue-300 bg-blue-950/40 py-0.5 rounded">ML Algorithms</div>
+          </div>
+
+          <!-- Pandas -->
+          <div class="glass-panel p-4.5 rounded-2xl border-indigo-500/20 text-center space-y-2 hover:border-indigo-400 transition-all">
+            <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-400 mx-auto flex items-center justify-center font-bold text-base">
+              <i data-lucide="table" class="w-6 h-6"></i>
+            </div>
+            <div class="text-xs font-bold text-white">Pandas</div>
+            <p class="text-[10px] text-slate-400">تنظيف وهيكلة وتحليل مصفوفات البيانات</p>
+            <div class="text-[9px] font-mono text-indigo-300 bg-indigo-950/40 py-0.5 rounded">Data Wrangling</div>
+          </div>
+
+          <!-- NumPy -->
+          <div class="glass-panel p-4.5 rounded-2xl border-sky-500/20 text-center space-y-2 hover:border-sky-400 transition-all">
+            <div class="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-400 mx-auto flex items-center justify-center font-bold text-base">
+              <i data-lucide="binary" class="w-6 h-6"></i>
+            </div>
+            <div class="text-xs font-bold text-white">NumPy</div>
+            <p class="text-[10px] text-slate-400">العمليات المصفوفية والحسابات الرياضية</p>
+            <div class="text-[9px] font-mono text-sky-300 bg-sky-950/40 py-0.5 rounded">Fast Matrix Math</div>
+          </div>
+
+          <!-- Matplotlib / Visualization -->
+          <div class="glass-panel p-4.5 rounded-2xl border-emerald-500/20 text-center space-y-2 hover:border-emerald-400 transition-all">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 mx-auto flex items-center justify-center font-bold text-base">
+              <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
+            </div>
+            <div class="text-xs font-bold text-white">Matplotlib</div>
+            <p class="text-[10px] text-slate-400">توليد الرسوم البيانية ومخططات التقرير</p>
+            <div class="text-[9px] font-mono text-emerald-300 bg-emerald-950/40 py-0.5 rounded">Data Charts</div>
+          </div>
+        </div>
+
+        <!-- Integration Note -->
+        <div class="p-3.5 rounded-2xl bg-navy-900/80 border border-sky-500/20 flex items-center justify-between text-xs text-slate-300">
+          <span class="flex items-center gap-2">
+            <i data-lucide="check-circle" class="w-4 h-4 text-cyan-400"></i>
+            <span>تكامل متين وموثوق يضمن استخراج نتائج التنبؤ بدقة رياضية وأداء خفيف جداً.</span>
+          </span>
+          <span class="font-mono text-cyan-400">Production-Ready ML Pipeline</span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+        <span>Industry Standard Machine Learning Foundations</span>
+        <span class="font-mono text-cyan-400">Slide 11 / 18</span>
+      </div>
+    </div>
+
+    <!-- ================= SLIDE 12: DATASET ARCHITECTURE ================= -->
+    <div class="slide-container" data-slide="12" data-cat="Dataset & Features">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-sm font-bold font-mono">12</span>
+          <div>
+            <h3 class="text-2xl font-bold text-white">
+              <span class="lang-ar">بيانات التدريب وهندسة الخصائص (Dataset)</span>
+              <span class="lang-en hidden">Dataset & Feature Engineering</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-mono">Data Sources, Feature Matrix, Preprocessing & Ethical Splitting</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono text-blue-400 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20">Data Engine</span>
+      </div>
+
+      <div class="grid grid-cols-12 gap-6 my-auto items-stretch">
+        <!-- Left: Dataset Metrics -->
+        <div class="col-span-12 lg:col-span-5 space-y-3">
+          <div class="glass-panel p-5 rounded-3xl border-blue-500/20 space-y-3">
+            <h4 class="text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="database" class="w-4 h-4 text-blue-400"></i>
+              <span class="lang-ar">مواصفات وحجم البيانات المدربة</span>
+              <span class="lang-en hidden">Dataset Size & Characteristics</span>
+            </h4>
+
+            <div class="space-y-2.5">
+              <div class="p-3 rounded-2xl bg-cyan-950/30 border border-cyan-500/20 flex items-center justify-between">
+                <div>
+                  <div class="text-[11px] text-slate-400">إجمالي سجلات التدريب والتحقق</div>
+                  <div class="text-xl font-black text-cyan-300 font-mono">5,000+ Records</div>
+                </div>
+                <i data-lucide="layers" class="w-6 h-6 text-cyan-400"></i>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
+                  <div class="text-[10px] text-slate-400">بيانات التدريب (Train)</div>
+                  <div class="text-base font-bold text-blue-300 font-mono">80% (4,000)</div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
+                  <div class="text-[10px] text-slate-400">بيانات الاختبار (Test)</div>
+                  <div class="text-base font-bold text-emerald-300 font-mono">20% (1,000)</div>
+                </div>
+              </div>
+            </div>
+
+            <p class="text-[11px] text-slate-400 leading-relaxed pt-1">
+              تم تنظيف البيانات من القيم المفقودة (Missing Values Handling)، وتطبيع القيم الرقمية (Feature Scaling) لضمان حيادية النموذج.
+            </p>
+          </div>
+        </div>
+
+        <!-- Right: Core Feature Categories Matrix -->
+        <div class="col-span-12 lg:col-span-7">
+          <div class="glass-panel p-5 rounded-3xl border-sky-500/20 h-full flex flex-col justify-between space-y-3">
+            <h4 class="text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="git-commit" class="w-4 h-4 text-sky-400"></i>
+              <span class="lang-ar">أبرز المتغيرات والخصائص المستخلصة (Key Features)</span>
+              <span class="lang-en hidden">Extracted Feature Categories</span>
+            </h4>
+
+            <div class="grid grid-cols-2 gap-3 text-xs">
+              <div class="p-3 rounded-2xl bg-navy-900 border border-white/5 space-y-1">
+                <span class="text-cyan-300 font-bold block">1. الأداء الأكاديمي (Academic)</span>
+                <p class="text-slate-400 text-[11px]">درجات الرياضيات، البرمجة، المنطق، والمعدل التراكمي السابق.</p>
+              </div>
+
+              <div class="p-3 rounded-2xl bg-navy-900 border border-white/5 space-y-1">
+                <span class="text-blue-300 font-bold block">2. الميول والشغف (Inclinations)</span>
+                <p class="text-slate-400 text-[11px]">مستوى الاهتمام بالأمن، البيانات، تطوير الويب، والعتاد.</p>
+              </div>
+
+              <div class="p-3 rounded-2xl bg-navy-900 border border-white/5 space-y-1">
+                <span class="text-indigo-300 font-bold block">3. المحددات المالية (Budget)</span>
+                <p class="text-slate-400 text-[11px]">سقف الميزانية لشراء الأجهزة ومتطلبات البرامج التطبيقية.</p>
+              </div>
+
+              <div class="p-3 rounded-2xl bg-navy-900 border border-white/5 space-y-1">
+                <span class="text-emerald-300 font-bold block">4. العادات الدراسية (Habits)</span>
+                <p class="text-slate-400 text-[11px]">ساعات الفراغ الأسبوعية، سرعة الاستيعاب، والالتزام بالجدول.</p>
+              </div>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/5 text-[11px] text-slate-400 flex items-center justify-between">
+              <span>تطبيق خوارزمية k-Fold Cross Validation للتحقق من منع الـ Overfitting</span>
+              <span class="font-mono text-cyan-400">k=5 Folds</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+        <span>High-Quality Structured Data Built for Educational Fairness</span>
+        <span class="font-mono text-cyan-400">Slide 12 / 18</span>
+      </div>
+    </div>
+
+    <!-- ================= SLIDE 13: END-TO-END AI PIPELINE ================= -->
+    <div class="slide-container" data-slide="13" data-cat="AI Pipeline">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm font-bold font-mono">13</span>
+          <div>
+            <h3 class="text-2xl font-bold text-white">
+              <span class="lang-ar">مخطط تدفق خط المعالجة الذكي (AI Pipeline)</span>
+              <span class="lang-en hidden">End-to-End AI Machine Learning Pipeline</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-mono">From Raw Input to Final Predictive Intelligence & PDF Synthesis</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">Flowchart</span>
+      </div>
+
+      <div class="my-auto space-y-3">
+        <!-- 6 Step Connected Flowchart -->
+        <div class="grid grid-cols-6 gap-2.5 text-center">
+          <div class="glass-panel p-3 rounded-2xl border-cyan-500/30 space-y-1.5 relative hover:border-cyan-400">
+            <span class="w-6 h-6 rounded-lg bg-cyan-500/20 text-cyan-300 mx-auto flex items-center justify-center text-[10px] font-mono font-bold">1</span>
+            <div class="text-xs font-bold text-white">Input Profile</div>
+            <div class="text-[9px] text-slate-400">مدخلات الطالب</div>
+          </div>
+
+          <div class="glass-panel p-3 rounded-2xl border-blue-500/30 space-y-1.5 relative hover:border-blue-400">
+            <span class="w-6 h-6 rounded-lg bg-blue-500/20 text-blue-300 mx-auto flex items-center justify-center text-[10px] font-mono font-bold">2</span>
+            <div class="text-xs font-bold text-white">Cleaning & Norm</div>
+            <div class="text-[9px] text-slate-400">تنظيف وتطبيع</div>
+          </div>
+
+          <div class="glass-panel p-3 rounded-2xl border-indigo-500/30 space-y-1.5 relative hover:border-indigo-400">
+            <span class="w-6 h-6 rounded-lg bg-indigo-500/20 text-indigo-300 mx-auto flex items-center justify-center text-[10px] font-mono font-bold">3</span>
+            <div class="text-xs font-bold text-white">ML Prediction</div>
+            <div class="text-[9px] text-slate-400">تطبيق النماذج</div>
+          </div>
+
+          <div class="glass-panel p-3 rounded-2xl border-sky-500/30 space-y-1.5 relative hover:border-sky-400">
+            <span class="w-6 h-6 rounded-lg bg-sky-500/20 text-sky-300 mx-auto flex items-center justify-center text-[10px] font-mono font-bold">4</span>
+            <div class="text-xs font-bold text-white">Recommendation</div>
+            <div class="text-[9px] text-slate-400">توليد التوصيات</div>
+          </div>
+
+          <div class="glass-panel p-3 rounded-2xl border-amber-500/30 space-y-1.5 relative hover:border-amber-400">
+            <span class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-300 mx-auto flex items-center justify-center text-[10px] font-mono font-bold">5</span>
+            <div class="text-xs font-bold text-white">AI Score Metric</div>
+            <div class="text-[9px] text-slate-400">احتساب الجاهزية</div>
+          </div>
+
+          <div class="glass-panel p-3 rounded-2xl border-emerald-500/30 space-y-1.5 relative hover:border-emerald-400">
+            <span class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-300 mx-auto flex items-center justify-center text-[10px] font-mono font-bold">6</span>
+            <div class="text-xs font-bold text-white">PDF Synthesis</div>
+            <div class="text-[9px] text-slate-400">تصدير التقرير</div>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-white/[0.02] border border-white/10 text-xs text-slate-300 leading-relaxed">
+          <strong class="text-cyan-400 block mb-1">الربط المنطقي بين المراحل:</strong>
+          يمر الطلب عبر Pipeline مؤتمت بنسبة 100%، حيث تستلم دوال الـ Backend المدخلات، وتنفذ عمليات الـ Scaling، ثم تستدعي نموذج التنبؤ المُدرب مسبقاً (.pkl model)، لترجع النتائج في شكل JSON مهيكل يُبنى عليه تقرير الـ PDF.
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+        <span>Deterministic, Reproducible & High-Performance AI Pipeline</span>
+        <span class="font-mono text-cyan-400">Slide 13 / 18</span>
+      </div>
+    </div>
+
+    <!-- ================= SLIDE 14: AI SCORE & CONFIDENCE EVALUATION ================= -->
+    <div class="slide-container" data-slide="14" data-cat="Confidence Evaluation">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm font-bold font-mono">14</span>
+          <div>
+            <h3 class="text-2xl font-bold text-white">
+              <span class="lang-ar">معامل الثقة وتقييم درجة AI Score</span>
+              <span class="lang-en hidden">AI Score & Confidence Evaluation</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-mono">Model Explainability, Probabilistic Confidence & Confidence Intervals</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono text-amber-400 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">Evaluation</span>
+      </div>
+
+      <div class="grid grid-cols-12 gap-6 my-auto items-stretch">
+        <!-- Left: Gauge Metric Breakdown -->
+        <div class="col-span-12 lg:col-span-6 space-y-3">
+          <div class="glass-panel p-6 rounded-3xl border-amber-500/20 space-y-4">
+            <h4 class="text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="activity" class="w-5 h-5 text-amber-400"></i>
+              <span class="lang-ar">كيف نحسب درجة الثقة (AI Confidence)؟</span>
+              <span class="lang-en hidden">How AI Confidence is Calculated?</span>
+            </h4>
+
+            <div class="p-4 rounded-2xl bg-amber-950/30 border border-amber-500/30 space-y-2">
+              <div class="text-xs text-slate-300 leading-relaxed">
+                تعتمد درجة <strong>AI Score</strong> على حساب المتوسط المرجح لثلاثة عوامل:
+              </div>
+              <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+                <li>احتمالية التصنيف من نموذج الغابات العشوائية (Class Probability).</li>
+                <li>درجة تجانس الميول مع متطلبات التخصص التقني (Harmony Index).</li>
+                <li>استقرار المسار التاريخي لمعدل الطالب الأكاديمي (Consistency Factor).</li>
+              </ul>
+            </div>
+
+            <!-- Score Zones Legend -->
+            <div class="grid grid-cols-3 gap-2 text-center text-xs">
+              <div class="p-2 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 font-bold">
+                85 - 100% ممتاز
+              </div>
+              <div class="p-2 rounded-xl bg-sky-950/40 border border-sky-500/30 text-sky-300 font-bold">
+                70 - 84% جيد جداً
+              </div>
+              <div class="p-2 rounded-xl bg-amber-950/40 border border-amber-500/30 text-amber-300 font-bold">
+                &lt; 70% يحتاج مراجعة
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Model Evaluation Performance Metrics -->
+        <div class="col-span-12 lg:col-span-6">
+          <div class="glass-panel p-6 rounded-3xl border-sky-500/20 h-full flex flex-col justify-between space-y-3">
+            <h4 class="text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="check-check" class="w-5 h-5 text-cyan-400"></i>
+              <span class="lang-ar">مؤشرات الأداء الإحصائي للنموذج</span>
+              <span class="lang-en hidden">Statistical Model Metrics</span>
+            </h4>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div class="p-3.5 rounded-2xl bg-navy-900 border border-cyan-500/20">
+                <div class="text-[11px] text-slate-400">الدقة العامة (Accuracy)</div>
+                <div class="text-2xl font-black text-cyan-400 font-mono">92.4%</div>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-navy-900 border border-blue-500/20">
+                <div class="text-[11px] text-slate-400">مقياس التوافق (F1-Score)</div>
+                <div class="text-2xl font-black text-blue-400 font-mono">0.918</div>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-navy-900 border border-indigo-500/20">
+                <div class="text-[11px] text-slate-400">الإحكام (Precision)</div>
+                <div class="text-2xl font-black text-indigo-400 font-mono">93.1%</div>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-navy-900 border border-emerald-500/20">
+                <div class="text-[11px] text-slate-400">الاستدعاء (Recall)</div>
+                <div class="text-2xl font-black text-emerald-400 font-mono">90.7%</div>
+              </div>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/5 text-[11px] text-slate-400 flex items-center justify-between">
+              <span>تم التحقق باستخدام مصفوفة الالتباس (Confusion Matrix)</span>
+              <span class="font-mono text-cyan-400">Validated on Test Set</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+        <span>Transparent, Explainable & Scientifically Validated Metrics</span>
+        <span class="font-mono text-cyan-400">Slide 14 / 18</span>
+      </div>
+    </div>
+
+    <!-- ================= SLIDE 15: EXPECTED RESULTS & IMPACT ================= -->
+    <div class="slide-container" data-slide="15" data-cat="Expected Results">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-bold font-mono">15</span>
+          <div>
+            <h3 class="text-2xl font-bold text-white">
+              <span class="lang-ar">النتائج المتوقعة والأثر الأكاديمي (Before vs. After)</span>
+              <span class="lang-en hidden">Expected Results & Academic Impact</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-mono">Measurable Transformation in Student Academic Journey</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono text-cyan-400 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20">Impact</span>
+      </div>
+
+      <div class="grid grid-cols-12 gap-6 my-auto items-stretch">
+        <!-- Before vs After Comparison Grid -->
+        <div class="col-span-12 lg:col-span-6">
+          <div class="glass-panel p-5 rounded-3xl border-rose-500/20 h-full space-y-3">
+            <div class="flex items-center justify-between text-rose-400 font-bold text-sm">
+              <span class="flex items-center gap-2">
+                <i data-lucide="x-circle" class="w-4 h-4"></i>
+                <span>الوضع التقليدي قبل المنصة (Before)</span>
+              </span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-500/20">Traditional</span>
+            </div>
+
+            <ul class="space-y-2 text-xs text-slate-300">
+              <li class="p-2.5 rounded-xl bg-rose-950/20 border border-rose-500/20">
+                حيرة مستمرة وتغيير متكرر للتخصص بعد فوات الأوان.
+              </li>
+              <li class="p-2.5 rounded-xl bg-rose-950/20 border border-rose-500/20">
+                شراء أجهزة لابتوب غير مناسبة أو مبالغ في سعرها.
+              </li>
+              <li class="p-2.5 rounded-xl bg-rose-950/20 border border-rose-500/20">
+                تراكم المواد وانخفاض مفاجئ في المعدل التراكمي GPA.
+              </li>
+              <li class="p-2.5 rounded-xl bg-rose-950/20 border border-rose-500/20">
+                تخرج بدون مهارات متوافقة مع متطلبات سوق العمل التقني.
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="col-span-12 lg:col-span-6">
+          <div class="glass-panel p-5 rounded-3xl border-emerald-500/30 h-full space-y-3 bg-emerald-950/10">
+            <div class="flex items-center justify-between text-emerald-400 font-bold text-sm">
+              <span class="flex items-center gap-2">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                <span>الوضع الذكي مع منصة الطالب التقني (After)</span>
+              </span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20">AI-Powered</span>
+            </div>
+
+            <ul class="space-y-2 text-xs text-slate-300">
+              <li class="p-2.5 rounded-xl bg-emerald-950/30 border border-emerald-500/30">
+                اختيار تخصص موجه ومدعوم ببيانات الذكاء الاصطناعي بنسبة 92%+.
+              </li>
+              <li class="p-2.5 rounded-xl bg-emerald-950/30 border border-emerald-500/30">
+                توفير مالي واقتناء لابتوب يلائم المتطلبات البرمجية بدقة.
+              </li>
+              <li class="p-2.5 rounded-xl bg-emerald-950/30 border border-emerald-500/30">
+                خطة دراسية أسبوعية منظمة وتنبؤ استباقي بالمعدل.
+              </li>
+              <li class="p-2.5 rounded-xl bg-emerald-950/30 border border-emerald-500/30">
+                خارطة طريق مهنية واضحة مع الشهادات الاحترافية المستهدفة.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+        <span>Higher Retention, Better Student Welfare & Stronger Career Outcomes</span>
+        <span class="font-mono text-cyan-400">Slide 15 / 18</span>
+      </div>
+    </div>
+
+    <!-- ================= SLIDE 16: FUTURE DEVELOPMENT ROADMAP ================= -->
+    <div class="slide-container" data-slide="16" data-cat="Future Roadmap">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-sm font-bold font-mono">16</span>
+          <div>
+            <h3 class="text-2xl font-bold text-white">
+              <span class="lang-ar">خارطة التطوير والآفاق المستقبلية (Future Roadmap)</span>
+              <span class="lang-en hidden">Future Development & Strategic Expansion</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-mono">Scaling Tech Student Platform to Enterprise University Level</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono text-indigo-400 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20">Roadmap 2026-2027</span>
+      </div>
+
+      <div class="my-auto space-y-4">
+        <!-- 5 Future Milestones -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-3.5">
+          <!-- Milestone 1 -->
+          <div class="glass-panel p-4 rounded-2xl border-cyan-500/20 space-y-2 hover:border-cyan-400 transition-all text-center">
+            <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 mx-auto flex items-center justify-center">
+              <i data-lucide="smartphone" class="w-5 h-5"></i>
+            </div>
+            <div class="text-xs font-bold text-white">تطبيق الجوال الذكي</div>
+            <p class="text-[10px] text-slate-400">تطبيق iOS & Android مع تنبيهات ذكية لحظية للجدول.</p>
+            <div class="text-[9px] font-mono text-cyan-300 bg-cyan-950/40 py-0.5 rounded">Mobile App (Q1)</div>
+          </div>
+
+          <!-- Milestone 2 -->
+          <div class="glass-panel p-4 rounded-2xl border-blue-500/20 space-y-2 hover:border-blue-400 transition-all text-center">
+            <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 mx-auto flex items-center justify-center">
+              <i data-lucide="message-square" class="w-5 h-5"></i>
+            </div>
+            <div class="text-xs font-bold text-white">مساعد محادثة AI Chatbot</div>
+            <p class="text-[10px] text-slate-400">شات بوت ذكي مبني على LLMs للإجابة على استفسارات الطالب.</p>
+            <div class="text-[9px] font-mono text-blue-300 bg-blue-950/40 py-0.5 rounded">LLM Assistant (Q2)</div>
+          </div>
+
+          <!-- Milestone 3 -->
+          <div class="glass-panel p-4 rounded-2xl border-indigo-500/20 space-y-2 hover:border-indigo-400 transition-all text-center">
+            <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 mx-auto flex items-center justify-center">
+              <i data-lucide="briefcase" class="w-5 h-5"></i>
+            </div>
+            <div class="text-xs font-bold text-white">توصية الوظائف والتدريب</div>
+            <p class="text-[10px] text-slate-400">ربط مهارات الطالب بفرص التدريب التعاوني وسوق العمل.</p>
+            <div class="text-[9px] font-mono text-indigo-300 bg-indigo-950/40 py-0.5 rounded">Career Matching (Q3)</div>
+          </div>
+
+          <!-- Milestone 4 -->
+          <div class="glass-panel p-4 rounded-2xl border-sky-500/20 space-y-2 hover:border-sky-400 transition-all text-center">
+            <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-400 mx-auto flex items-center justify-center">
+              <i data-lucide="building-2" class="w-5 h-5"></i>
+            </div>
+            <div class="text-xs font-bold text-white">الربط مع بوابة الجامعة LMS</div>
+            <p class="text-[10px] text-slate-400">سحب الدرجات تلقائياً من Blackboard / Banner مباشرة.</p>
+            <div class="text-[9px] font-mono text-sky-300 bg-sky-950/40 py-0.5 rounded">LMS Integration (Q4)</div>
+          </div>
+
+          <!-- Milestone 5 -->
+          <div class="glass-panel p-4 rounded-2xl border-emerald-500/20 space-y-2 hover:border-emerald-400 transition-all text-center">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 mx-auto flex items-center justify-center">
+              <i data-lucide="cloud" class="w-5 h-5"></i>
+            </div>
+            <div class="text-xs font-bold text-white">النشر السحابي الشامل</div>
+            <p class="text-[10px] text-slate-400">خدمة سحابية تخدم مئات الآلاف من طلاب الجامعات.</p>
+            <div class="text-[9px] font-mono text-emerald-300 bg-emerald-950/40 py-0.5 rounded">Cloud Deployment</div>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-white/[0.02] border border-white/10 flex items-center justify-between text-xs text-slate-400">
+          <span>الهدف النهائي: تحويل المشروع إلى منصة وطنية تخدم جميع طلبة الجامعات.</span>
+          <span class="font-mono text-cyan-400">Vision 2030 EdTech</span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+        <span>Strategic Evolution from Course Project to High-Impact Platform</span>
+        <span class="font-mono text-cyan-400">Slide 16 / 18</span>
+      </div>
+    </div>
+
+    <!-- ================= SLIDE 17: CONCLUSION ================= -->
+    <div class="slide-container" data-slide="17" data-cat="Conclusion">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-bold font-mono">17</span>
+          <div>
+            <h3 class="text-2xl font-bold text-white">
+              <span class="lang-ar">الخاتمة وخلاصة الإنجاز</span>
+              <span class="lang-en hidden">Conclusion & Executive Summary</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-mono">Final Project Takeaways, Practical Merits & Innovation Highlights</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono text-cyan-400 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20">Summary</span>
+      </div>
+
+      <div class="grid grid-cols-12 gap-6 my-auto items-center">
+        <div class="col-span-12 lg:col-span-7 space-y-4">
+          <div class="glass-panel p-6 rounded-3xl border-cyan-500/30 space-y-3">
+            <h4 class="text-lg font-bold text-white">
+              <span class="lang-ar">مشروع تطبيقي يجمع بين العمق الأكاديمي والأثر العملي الملموس</span>
+              <span class="lang-en hidden">A Practical Project Bridging Academic Depth with Real-World Value</span>
+            </h4>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              أثبتت «منصة الطالب التقني» قدرة تقنيات الذكاء الاصطناعي على حل معضلة واقعية تواجه الطلاب في مسيرتهم الجامعية، عبر تقديم استشارات أكاديمية، تقنية، وجدولة ذكية موثوقة في ثوانٍ معدودة.
+            </p>
+
+            <div class="grid grid-cols-3 gap-3 pt-2">
+              <div class="p-3 rounded-2xl bg-cyan-950/30 border border-cyan-500/20 text-center">
+                <div class="text-lg font-black text-cyan-300 font-mono">5 Modules</div>
+                <div class="text-[10px] text-slate-400">خدمات متكاملة</div>
+              </div>
+              <div class="p-3 rounded-2xl bg-blue-950/30 border border-blue-500/20 text-center">
+                <div class="text-lg font-black text-blue-300 font-mono">92.4%</div>
+                <div class="text-[10px] text-slate-400">دقة التنبؤ</div>
+              </div>
+              <div class="p-3 rounded-2xl bg-emerald-950/30 border border-emerald-500/20 text-center">
+                <div class="text-lg font-black text-emerald-300 font-mono">100% Free</div>
+                <div class="text-[10px] text-slate-400">مفتوح للطلبة</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-span-12 lg:col-span-5">
+          <div class="glass-panel p-6 rounded-3xl border-sky-500/20 text-center space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-400 to-blue-600 text-slate-950 mx-auto flex items-center justify-center shadow-lg shadow-cyan-500/30">
+              <i data-lucide="award" class="w-6 h-6"></i>
+            </div>
+            <h4 class="text-base font-bold text-white">جاهزية العرض للتقييم الأكاديمي</h4>
+            <p class="text-xs text-slate-300">
+              فريق العمل مستعد لمناقشة التفاصيل الخوارزمية، هندسة البيانات، واختبار الكود أمام سعادة أستاذ المادة.
+            </p>
+            <div class="text-[11px] font-mono text-cyan-300 bg-cyan-950/40 p-2 rounded-xl border border-cyan-500/20">
+              Ready for Academic Defense
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+        <span>Tech Student Platform | AI Graduation Excellence</span>
+        <span class="font-mono text-cyan-400">Slide 17 / 18</span>
+      </div>
+    </div>
+
+    <!-- ================= SLIDE 18: QUESTIONS & DEFENSE (THANK YOU) ================= -->
+    <div class="slide-container" data-slide="18" data-cat="Q&A & Defense">
+      <div class="flex items-center justify-between text-xs text-slate-400">
+        <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
+          Final Defense & Evaluation Session
+        </span>
+        <span class="font-mono">Slide 18 / 18</span>
+      </div>
+
+      <div class="text-center my-auto max-w-2xl mx-auto space-y-6">
+        <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-cyan-400 via-blue-500 to-indigo-600 p-[1.5px] mx-auto shadow-2xl shadow-cyan-500/30 animate-float-slow">
+          <div class="w-full h-full bg-navy-950 rounded-[22px] flex items-center justify-center">
+            <i data-lucide="sparkles" class="w-10 h-10 text-cyan-400"></i>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <h2 class="text-4xl md:text-5xl font-black text-white">
+            <span class="lang-ar">شكراً لحسن استماعكم</span>
+            <span class="lang-en hidden">Thank You Very Much</span>
+          </h2>
+          <p class="text-base text-cyan-300 font-semibold font-mono">
+            Questions & Academic Defense Session
+          </p>
+          <p class="text-xs md:text-sm text-slate-400 max-w-lg mx-auto leading-relaxed">
+            <span class="lang-ar">نرحب بكافة أسئلة واستفسارات وملاحظات سعادة أستاذ المادة ولجنة التقييم الموقرة.</span>
+            <span class="lang-en hidden">We welcome all questions, feedback, and academic inquiries from the evaluating professor.</span>
+          </p>
+        </div>
+
+        <!-- Quick Action Trigger for Defense Bank -->
+        <div class="flex items-center justify-center gap-3 pt-2">
+          <button onclick="toggleQAModal()" class="px-5 py-2.5 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition-all shadow-lg shadow-cyan-500/25 flex items-center gap-2">
+            <i data-lucide="help-circle" class="w-4 h-4"></i>
+            <span>
+              <span class="lang-ar">فتح بنك الأسئلة والمناقشة (Q)</span>
+              <span class="lang-en hidden">Open Defense Q&A Sheet (Q)</span>
+            </span>
+          </button>
+          
+          <button onclick="goToSlide(1)" class="px-4 py-2.5 rounded-2xl bg-white/[0.05] hover:bg-white/10 text-slate-300 text-xs font-semibold border border-white/10 transition-all">
+            <span class="lang-ar">العودة للغلاف</span>
+            <span class="lang-en hidden">Back to Cover</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+        <span>End of Presentation | Tech Student Platform &copy; 2026</span>
+        <span class="font-mono text-cyan-400">All Modules Validated</span>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ================= BOTTOM PRESENTATION CONTROLS ================= -->
+  <footer class="relative z-30 px-8 py-3 border-t border-sky-500/10 bg-navy-950/70 backdrop-blur-xl flex items-center justify-between no-print">
+    <!-- Prev / Next Buttons -->
+    <div class="flex items-center gap-3">
+      <button onclick="prevSlide()" title="Previous Slide (Right Arrow)" class="px-3.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 border border-white/10 transition-all flex items-center gap-1.5 text-xs font-semibold active:scale-95">
+        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        <span>
+          <span class="lang-ar">السابق</span>
+          <span class="lang-en hidden">Prev</span>
+        </span>
+      </button>
+
+      <button onclick="nextSlide()" title="Next Slide (Left Arrow or Space)" class="px-4 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold transition-all flex items-center gap-1.5 text-xs shadow-lg shadow-cyan-500/25 active:scale-95">
+        <span>
+          <span class="lang-ar">التالي</span>
+          <span class="lang-en hidden">Next</span>
+        </span>
+        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+      </button>
+
+      <!-- Slide Dots Container -->
+      <div id="dots-container" class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.02] border border-white/5 mr-2"></div>
+    </div>
+
+    <!-- Quick Jump Select -->
+    <div class="flex items-center gap-2">
+      <span class="text-xs text-slate-400 font-mono hidden md:inline">Jump to:</span>
+      <select id="slide-jump-select" onchange="goToSlide(parseInt(this.value))" class="bg-navy-900 border border-white/10 rounded-lg px-2.5 py-1 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 cursor-pointer font-sans">
+        <option value="1">01. الغلاف (Cover)</option>
+        <option value="2">02. المشكلة والتحديات (The Problem)</option>
+        <option value="3">03. فكرة المشروع والحل (Project Idea)</option>
+        <option value="4">04. الأهداف الاستراتيجية (Objectives)</option>
+        <option value="5">05. معمارية المنصة (Architecture)</option>
+        <option value="6">06. خدمة 1: توصية التخصص (Major AI)</option>
+        <option value="7">07. خدمة 2: توصية اللابتوب (Laptop AI)</option>
+        <option value="8">08. خدمة 3: التنبؤ بالمعدل (Performance)</option>
+        <option value="9">09. خدمة 4: الخطة الدراسية (Study Plan)</option>
+        <option value="10">10. خدمة 5: التقرير الذكي (PDF Report)</option>
+        <option value="11">11. تقنيات الذكاء الاصطناعي (AI Stack)</option>
+        <option value="12">12. بيانات التدريب (Dataset)</option>
+        <option value="13">13. خط المعالجة (AI Pipeline)</option>
+        <option value="14">14. تقييم معامل الثقة (AI Score)</option>
+        <option value="15">15. الأثر والنتائج (Before vs After)</option>
+        <option value="16">16. الخارطة المستقبلية (Future Roadmap)</option>
+        <option value="17">17. الخاتمة وخلاصة الإنجاز (Conclusion)</option>
+        <option value="18">18. جلسة المناقشة (Defense & Q&A)</option>
+      </select>
+    </div>
+
+    <!-- Shortcuts Helper Pill -->
+    <div class="hidden md:flex items-center gap-2 text-[11px] text-slate-400 font-mono">
+      <span class="px-1.5 py-0.5 rounded bg-white/5 border border-white/10">&larr; &rarr; Nav</span>
+      <span class="px-1.5 py-0.5 rounded bg-white/5 border border-white/10">Q Defense</span>
+      <span class="px-1.5 py-0.5 rounded bg-white/5 border border-white/10">F Fullscreen</span>
+    </div>
+  </footer>
+
+  <!-- ================= PROFESSOR DEFENSE & Q&A MODAL (Q) ================= -->
+  <div id="qa-defense-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-lg opacity-0 pointer-events-none transition-all duration-300 flex items-center justify-center p-4 md:p-8">
+    <div class="glass-panel w-full max-w-4xl max-h-[85vh] rounded-3xl border-sky-500/30 shadow-2xl flex flex-col overflow-hidden">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between p-5 border-b border-white/10 bg-navy-950">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
+            <i data-lucide="help-circle" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-white">بنك أسئلة المناقشة الأكاديمية للدفاع عن المشروع (Professor Defense Hub)</h3>
+            <p class="text-xs text-slate-400">إجابات علمية دقيقة ومباشرة لأبرز الأسئلة المتوقعة من لجنة تقييم مشاريع الذكاء الاصطناعي</p>
+          </div>
+        </div>
+        <button onclick="toggleQAModal()" class="p-2 rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition-all">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto space-y-3.5 text-xs md:text-sm">
+        <!-- Q1 -->
+        <div class="p-4 rounded-2xl bg-navy-900 border border-cyan-500/30 space-y-2">
+          <div class="flex justify-between text-cyan-300 font-bold">
+            <span>س1: ما هو النموذج الرياضي المستخدم في تصنيف التخصصات ولماذا تم اختياره؟</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20">Random Forest</span>
+          </div>
+          <div class="p-3 rounded-xl bg-cyan-950/30 border border-cyan-500/20 text-slate-200 font-semibold leading-relaxed">
+            استخدمنا خوارزمية <strong>RandomForestClassifier</strong> لأنها تجمع بين دقة عالية في تصنيف البيانات متعددة الفئات (Multi-class Classification)، ومقاومتها الممتازة للـ Overfitting، وقدرتها على إعطاء مقياس واضح لأهمية الخصائص (Feature Importance).
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="p-4 rounded-2xl bg-navy-900 border border-blue-500/30 space-y-2">
+          <div class="flex justify-between text-blue-300 font-bold">
+            <span>س2: كيف تم التعامل مع احتمالية وجود انحياز أو Overfitting في بيانات التدريب؟</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/20">Cross-Validation</span>
+          </div>
+          <div class="p-3 rounded-xl bg-blue-950/30 border border-blue-500/20 text-slate-200 font-semibold leading-relaxed">
+            تم تطبيق تقنية <strong>Stratified k-Fold Cross Validation (k=5)</strong> لضمان توزيع الفئات بالتساوي، واستخدام تقنيات التنظيم (Hyperparameter Tuning via GridSearchCV) لضبط عمق الأشجار وعدد المقسمات.
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="p-4 rounded-2xl bg-navy-900 border border-indigo-500/30 space-y-2">
+          <div class="flex justify-between text-indigo-300 font-bold">
+            <span>س3: كيف يتم احتساب مؤشر الجاهزية AI Score؟</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-500/20">Score Engine</span>
+          </div>
+          <div class="p-3 rounded-xl bg-indigo-950/30 border border-indigo-500/20 text-slate-200 font-semibold leading-relaxed">
+            هو مقياس ترجيحي يجمع بين: احتمالية الانتماء للفئة المستهدفة من النموذج، درجة تطابق الميول الحقيقية، واستقرار المعدل الأكاديمي، لينتج درجة نهائية من 100 توضح جاهزية الطالب للنجاح في التخصص.
+          </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="p-4 rounded-2xl bg-navy-900 border border-emerald-500/30 space-y-2">
+          <div class="flex justify-between text-emerald-300 font-bold">
+            <span>س4: ما هي القيمة المضافة لخدمة توصية اللابتوب مقارنة بمجرد محرك بحث عادي؟</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20">Constraint Solver</span>
+          </div>
+          <div class="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/20 text-slate-200 font-semibold leading-relaxed">
+            المنصة لا تبحث فقط بالاسم، بل تطبق <strong>Constraint Satisfaction Optimization</strong> لتربط ميزانية الطالب بدقة المتطلبات البرمجية لتخصصه (مثلاً: دعم كروت CUDA لطلاب الذكاء الاصطناعي، وسعة الرام لطلاب الأمن ومختبرات الـ VMs).
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 border-t border-white/10 bg-navy-950 flex items-center justify-between text-xs text-slate-400">
+        <span>مفتاح الاختصار السريع لفتح/إغلاق بنك الأسئلة هو <strong>(Q)</strong></span>
+        <button onclick="toggleQAModal()" class="px-4 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold transition-all">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= CLIENT JAVASCRIPT ENGINE ================= -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Slide State Management
+    let currentSlide = 1;
+    const totalSlides = 18;
+    const slides = document.querySelectorAll('.slide-container');
+    const slideNumBadge = document.getElementById('slide-num-badge');
+    const slideCatBadge = document.getElementById('slide-category');
+    const slideJumpSelect = document.getElementById('slide-jump-select');
+    const dotsContainer = document.getElementById('dots-container');
+
+    // Language State: 'ar' or 'en'
+    let currentLang = 'ar';
+
+    function toggleLanguage() {
+      if (currentLang === 'ar') {
+        currentLang = 'en';
+        document.documentElement.setAttribute('lang', 'en');
+        document.documentElement.setAttribute('dir', 'ltr');
+        document.body.classList.add('lang-en');
+        document.getElementById('lang-btn-text').textContent = 'العربية';
+        document.querySelectorAll('.lang-ar').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.lang-en').forEach(el => el.classList.remove('hidden'));
+      } else {
+        currentLang = 'ar';
+        document.documentElement.setAttribute('lang', 'ar');
+        document.documentElement.setAttribute('dir', 'rtl');
+        document.body.classList.remove('lang-en');
+        document.getElementById('lang-btn-text').textContent = 'English';
+        document.querySelectorAll('.lang-ar').forEach(el => el.classList.remove('hidden'));
+        document.querySelectorAll('.lang-en').forEach(el => el.classList.add('hidden'));
+      }
+    }
+
+    // Build Dots
+    function initDots() {
+      if (!dotsContainer) return;
+      dotsContainer.innerHTML = '';
+      for (let i = 1; i <= totalSlides; i++) {
+        const dot = document.createElement('button');
+        dot.className = `h-1.5 rounded-full transition-all duration-300 ${i === 1 ? 'w-5 bg-cyan-400' : 'w-1.5 bg-white/20 hover:bg-white/40'}`;
+        dot.onclick = () => goToSlide(i);
+        dot.title = `Slide ${i}`;
+        dotsContainer.appendChild(dot);
+      }
+    }
+    initDots();
+
+    function updateDots() {
+      if (!dotsContainer) return;
+      const dots = dotsContainer.children;
+      for (let i = 0; i < dots.length; i++) {
+        if (i + 1 === currentSlide) {
+          dots[i].className = 'w-5 h-1.5 rounded-full bg-cyan-400 transition-all duration-300 shadow-sm shadow-cyan-400/50';
+        } else {
+          dots[i].className = 'w-1.5 h-1.5 rounded-full bg-white/20 hover:bg-white/40 transition-all duration-300';
+        }
+      }
+    }
+
+    function goToSlide(n) {
+      if (n < 1 || n > totalSlides || n === currentSlide) return;
+
+      slides.forEach(slide => {
+        const idx = parseInt(slide.dataset.slide);
+        slide.classList.remove('active', 'prev');
+        if (idx < n) slide.classList.add('prev');
+      });
+
+      currentSlide = n;
+      const target = document.querySelector(`[data-slide="${currentSlide}"]`);
+      if (target) {
+        target.classList.add('active');
+        if (slideNumBadge) slideNumBadge.textContent = String(currentSlide).padStart(2, '0');
+        if (slideCatBadge && target.dataset.cat) slideCatBadge.textContent = target.dataset.cat;
+      }
+
+      if (slideJumpSelect) slideJumpSelect.value = currentSlide;
+      updateDots();
+
+      // Confetti on Slide 18
+      if (currentSlide === 18) {
+        try {
+          confetti({
+            particleCount: 60,
+            spread: 70,
+            origin: { y: 0.75 },
+            colors: ['#00E5FF', '#38BDF8', '#2563EB', '#10B981', '#F59E0B']
+          });
+        } catch (e) {}
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) goToSlide(currentSlide + 1);
+      else goToSlide(1);
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) goToSlide(currentSlide - 1);
+    }
+
+    // Keyboard Navigation
+    document.addEventListener('keydown', (e) => {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+
+      if (e.key === 'ArrowLeft' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        if (document.documentElement.getAttribute('dir') === 'rtl') nextSlide();
+        else nextSlide();
+      } else if (e.key === 'ArrowRight' || e.key === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullScreen();
+      } else if (e.key === 'q' || e.key === 'Q') {
+        toggleQAModal();
+      } else if (e.key === 'l' || e.key === 'L') {
+        toggleLanguage();
+      }
+    });
+
+    // Timer Logic
+    let timerSeconds = 0;
+    let timerRunning = false;
+    let timerInterval = null;
+    const timerText = document.getElementById('timer-text');
+
+    function toggleTimer() {
+      if (!timerRunning) {
+        timerRunning = true;
+        timerInterval = setInterval(() => {
+          timerSeconds++;
+          const m = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+          const s = String(timerSeconds % 60).padStart(2, '0');
+          if (timerText) timerText.textContent = `${m}:${s}`;
+        }, 1000);
+      } else {
+        timerRunning = false;
+        clearInterval(timerInterval);
+      }
+    }
+
+    // Defense Q&A Modal
+    const qaModal = document.getElementById('qa-defense-modal');
+    function toggleQAModal() {
+      if (qaModal.classList.contains('opacity-0')) {
+        qaModal.classList.remove('opacity-0', 'pointer-events-none');
+      } else {
+        qaModal.classList.add('opacity-0', 'pointer-events-none');
+      }
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
+
+    // Interactive Neural Particle Canvas
+    const canvas = document.getElementById('neural-canvas');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      let w = canvas.width = window.innerWidth;
+      let h = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      });
+
+      const nodes = [];
+      const nodeCount = 50;
+
+      for (let i = 0; i < nodeCount; i++) {
+        nodes.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          radius: Math.random() * 2 + 0.8,
+          vx: (Math.random() - 0.5) * 0.45,
+          vy: (Math.random() - 0.5) * 0.45,
+          alpha: Math.random() * 0.6 + 0.2
+        });
+      }
+
+      function drawNeuralNet() {
+        ctx.clearRect(0, 0, w, h);
+
+        // Connections
+        for (let i = 0; i < nodeCount; i++) {
+          for (let j = i + 1; j < nodeCount; j++) {
+            const dx = nodes[i].x - nodes[j].x;
+            const dy = nodes[i].y - nodes[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < 130) {
+              ctx.beginPath();
+              ctx.moveTo(nodes[i].x, nodes[i].y);
+              ctx.lineTo(nodes[j].x, nodes[j].y);
+              ctx.strokeStyle = `rgba(0, 229, 255, ${0.12 * (1 - dist / 130)})`;
+              ctx.lineWidth = 0.8;
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Draw Nodes
+        for (let node of nodes) {
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(56, 189, 248, ${node.alpha})`;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = 'rgba(0, 229, 255, 0.5)';
+          ctx.fill();
+
+          node.x += node.vx;
+          node.y += node.vy;
+
+          if (node.x < 0) node.x = w;
+          if (node.x > w) node.x = 0;
+          if (node.y < 0) node.y = h;
+          if (node.y > h) node.y = 0;
+        }
+
+        requestAnimationFrame(drawNeuralNet);
+      }
+      drawNeuralNet();
+    }
+  </script>
+</body>
+</html>

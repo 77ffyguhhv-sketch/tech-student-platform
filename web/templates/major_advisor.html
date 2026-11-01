@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Major Advisor — TechStudent AI</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+    <!-- NAVIGATION BAR -->
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <span class="nav-logo-icon">🧠</span>
+            <span>TechStudent AI</span>
+        </a>
+        <ul class="nav-menu">
+            <li><a href="/" class="nav-link" data-en="Home" data-ar="الرئيسية">Home</a></li>
+            <li><a href="/#services" class="nav-link" data-en="Services" data-ar="الخدمات">Services</a></li>
+            <li><a href="/#about" class="nav-link" data-en="About Platform" data-ar="عن المنصة">About Platform</a></li>
+        </ul>
+        <div class="nav-controls">
+            <button id="lang-toggle" class="btn btn-secondary" style="font-size:0.85rem; padding:0.4rem 0.8rem;">العربية</button>
+            <button id="theme-toggle" class="btn-icon">🌙</button>
+        </div>
+    </nav>
+
+    <!-- CONTAINER -->
+    <main class="container">
+        
+        <!-- PAGE HEADER -->
+        <header class="page-header">
+            <div class="header-icon" style="background: var(--color-primary-gradient);">🧠</div>
+            <h1 data-en="Smart Major Advisor" data-ar="المستشار الذكي للتخصصات">Smart Major Advisor</h1>
+            <p data-en="Uncover the academic or professional paths best suited for you. Adjust the sliders to reflect your cognitive strengths in each intelligence domain, and our machine learning model will recommend your top careers."
+               data-ar="اكتشف المسارات الأكاديمية أو المهنية الأكثر ملاءمة لك. اضبط أشرطة التمرير لتعكس نقاط قوتك المعرفية في كل مجال ذكاء، وسيوصي نموذج تعلم الآلة لدينا بأفضل المهن المناسبة لك.">
+                Uncover the academic or professional paths best suited for you. Adjust the sliders to reflect your cognitive strengths in each intelligence domain, and our machine learning model will recommend your top careers.
+            </p>
+        </header>
+
+        <!-- INPUT FORM CARD -->
+        <section class="card" style="max-width: 900px; margin: 0 auto;">
+            <form id="major-advisor-form">
+                
+                <h3 style="margin-bottom: 1.5rem;" data-en="Assess Your Skills (Scale: 0 - 20)" data-ar="قيّم مهاراتك (المقياس: 0 - 20)">
+                    Assess Your Skills (Scale: 0 - 20)
+                </h3>
+                
+                <div class="form-grid">
+                    
+                    <!-- 1. Linguistic -->
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span data-en="Linguistic Intelligence" data-ar="الذكاء اللغوي">Linguistic Intelligence</span>
+                            <span class="slider-val">13</span>
+                        </div>
+                        <span class="label-desc" data-en="Written/spoken words, language comprehension, and verbal expression." data-ar="الكلمات المكتوبة/المنطوقة، وفهم اللغة، والتعبير اللفظي.">Written/spoken words, language comprehension, and verbal expression.</span>
+                        <input type="range" id="Linguistic" min="5" max="20" value="13" class="range-slider">
+                    </div>
+
+                    <!-- 2. Musical -->
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span data-en="Musical Intelligence" data-ar="الذكاء الموسيقي">Musical Intelligence</span>
+                            <span class="slider-val">9</span>
+                        </div>
+                        <span class="label-desc" data-en="Rhythm, pitch, melody recognition, and sound patterns." data-ar="الإيقاع، النغمة، تمييز الألحان، وأنماط الأصوات.">Rhythm, pitch, melody recognition, and sound patterns.</span>
+                        <input type="range" id="Musical" min="5" max="20" value="9" class="range-slider">
+                    </div>
+
+                    <!-- 3. Bodily -->
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span data-en="Bodily-Kinesthetic" data-ar="الذكاء الحركي/الجسدي">Bodily-Kinesthetic</span>
+                            <span class="slider-val">12</span>
+                        </div>
+                        <span class="label-desc" data-en="Physical coordination, movement control, and hands-on skill." data-ar="التنسيق الجسدي، التحكم في الحركة، والمهارات اليدوية والعملية.">Physical coordination, movement control, and hands-on skill.</span>
+                        <input type="range" id="Bodily" min="5" max="20" value="12" class="range-slider">
+                    </div>
+
+                    <!-- 4. Logical - Mathematical -->
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span data-en="Logical-Mathematical" data-ar="الذكاء المنطقي الرياضي">Logical-Mathematical</span>
+                            <span class="slider-val">15</span>
+                        </div>
+                        <span class="label-desc" data-en="Problem solving, math, reasoning, and abstract analysis." data-ar="حل المشكلات، الرياضيات، التفكير المنطقي، والتحليل التجريدي.">Problem solving, math, reasoning, and abstract analysis.</span>
+                        <input type="range" id="Logical-Mathematical" min="5" max="20" value="15" class="range-slider">
+                    </div>
+
+                    <!-- 5. Spatial-Visualization -->
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span data-en="Spatial-Visualization" data-ar="الذكاء البصري المكاني">Spatial-Visualization</span>
+                            <span class="slider-val">10</span>
+                        </div>
+                        <span class="label-desc" data-en="Mental imagery, 3D space orientation, and design." data-ar="التخيل الذهني، التوجيه في الفضاء ثلاثي الأبعاد، والتصميم.">Mental imagery, 3D space orientation, and design.</span>
+                        <input type="range" id="Spatial-Visualization" min="5" max="20" value="10" class="range-slider">
+                    </div>
+
+                    <!-- 6. Interpersonal -->
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span data-en="Interpersonal" data-ar="الذكاء الاجتماعي (بين الأشخاص)">Interpersonal</span>
+                            <span class="slider-val">15</span>
+                        </div>
+                        <span class="label-desc" data-en="Understanding others, teamwork, empathy, and leadership." data-ar="فهم الآخرين، العمل الجماعي، التعاطف، والقيادة.">Understanding others, teamwork, empathy, and leadership.</span>
+                        <input type="range" id="Interpersonal" min="2" max="20" value="15" class="range-slider">
+                    </div>
+
+                    <!-- 7. Intrapersonal -->
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span data-en="Intrapersonal" data-ar="الذكاء الذاتي (فهم النفس)">Intrapersonal</span>
+                            <span class="slider-val">15</span>
+                        </div>
+                        <span class="label-desc" data-en="Self-awareness, emotional regulation, and personal reflection." data-ar="الوعي بالذات، تنظيم المشاعر، والتأمل الشخصي والداخلي.">Self-awareness, emotional regulation, and personal reflection.</span>
+                        <input type="range" id="Intrapersonal" min="5" max="20" value="15" class="range-slider">
+                    </div>
+
+                    <!-- 8. Naturalist -->
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span data-en="Naturalist Intelligence" data-ar="الذكاء الطبيعي">Naturalist Intelligence</span>
+                            <span class="slider-val">11</span>
+                        </div>
+                        <span class="label-desc" data-en="Understanding environment, nature, plants, and classification." data-ar="فهم البيئة، الطبيعة، النباتات، وتصنيف الكائنات الحية.">Understanding environment, nature, plants, and classification.</span>
+                        <input type="range" id="Naturalist" min="0" max="20" value="11" class="range-slider">
+                    </div>
+
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary" style="padding: 1rem 3rem; font-size: 1.1rem;"
+                            data-en="Get AI Recommendation" data-ar="احصل على توصية الذكاء الاصطناعي">
+                        Get AI Recommendation
+                    </button>
+                </div>
+
+            </form>
+        </section>
+
+        <!-- LOADING INDICATOR -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- RESULTS SECTION -->
+        <section id="results-wrapper" class="results-wrapper" style="max-width: 900px; margin: 3rem auto 0 auto;">
+            <div class="results-card">
+                <div style="text-align: center;">
+                    <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;" data-en="Your AI Career Matching" data-ar="مطابقتك المهنية بالذكاء الاصطناعي">
+                        Your AI Career Matching
+                    </h3>
+                    <p style="color: var(--text-secondary);" data-en="Based on your Multiple Intelligences profile, the system recommends:" data-ar="بناءً على ملف الذكاء المتعدد الخاص بك، يوصي النظام بـ:">
+                        Based on your Multiple Intelligences profile, the system recommends:
+                    </p>
+                </div>
+
+                <div class="result-badge-container">
+                    <div id="recommended-profession" class="result-badge">--</div>
+                </div>
+
+                <div style="border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+                    <h4 style="font-weight: 700; margin-bottom: 1rem;" data-en="Top Predictions Probability Breakdown" data-ar="تفصيل احتمالات التوقعات الأفضل">
+                        Top Predictions Probability Breakdown
+                    </h4>
+                    <div id="probability-list" class="prob-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div style="font-weight: 700;" data-en="TechStudent AI Platform" data-ar="منصة الطلاب التقنية للذكاء الاصطناعي">TechStudent AI Platform</div>
+        <div style="font-size: 0.8rem; opacity: 0.7;" data-en="© 2026 TechStudent AI. Powered by Advanced Machine Learning." data-ar="© 2026 TechStudent AI. مدعوم بالتعلم الآلي المتقدم.">
+            © 2026 TechStudent AI. Powered by Advanced Machine Learning.
+        </div>
+    </footer>
+
+    <!-- LOGIC SCRIPTS -->
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
